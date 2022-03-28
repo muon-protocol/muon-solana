@@ -1,0 +1,30 @@
+[package]
+name = "muon-sample-program"
+version = "0.1.0"
+edition = "2018"
+
+[features]
+no-entrypoint = []
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+muonv02 = { path = "../muonv02", features=["no-entrypoint"] }
+thiserror = "1.0.30"
+solana-program = "=1.7.9"
+primitive-types = "0.10.1"
+borsh = "0.9.1"
+borsh-derive = "0.9.1"
+getrandom = { version = "0.2.2", features = ["custom"] }
+sha3 = "0.9.1"
+
+
+[lib]
+name = "muon_sample_program"
+crate-type = ["cdylib", "lib"]
+
+[profile.dev]
+opt-level = 0
+
+[profile.release]
+opt-level = 3
