@@ -29,7 +29,11 @@ export async function handleArgs (handlers: MuonCommandHandlers) {
         )
         .command("group-add <ethAddress> <pubKeyX> <pubkeyYParity>",
             "add new verification group info.",
-            {},
+            {
+                ethAddress: {type: "string"},
+                pubKeyX: {type: "string"},
+                pubkeyYParity: {type: "string"},
+            },
             handlers.addGroup
         )
         .command("group-list",
