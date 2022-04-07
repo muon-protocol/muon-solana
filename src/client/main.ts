@@ -44,7 +44,7 @@ async function main() {
         },
         addGroup: async (argv) => {
             await initialize()
-            await addGroupProcess(argv.ethAddress, argv.pubKeyX, argv.pubKeyYParity)
+            await addGroupProcess(argv.ethAddress, argv.pubKeyX, argv.pubkeyYParity)
         },
         listGroup: async () => {
             await initialize()

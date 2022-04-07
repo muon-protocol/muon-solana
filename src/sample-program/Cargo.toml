@@ -9,7 +9,7 @@ no-entrypoint = []
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-muonv02 = { path = "../muonv02", features=["no-entrypoint"] }
+muonv02 = { path = "../muon-program", features=["no-entrypoint"] }
 thiserror = "1.0.30"
 solana-program = "=1.7.9"
 primitive-types = "0.10.1"

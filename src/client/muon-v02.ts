@@ -362,7 +362,11 @@ export async function getMinimumBalanceForRentExemption(numBytes: number): Promi
 
 export async function addGroup(address: string, pubKeyX: string, pubKeyYParity: number, admin: Keypair) {
     console.log('adding group ...');
-    let _addr: string = publicKeyToAddress(`${pubKeyYParity == 1 ? "03" : "02"}${pubKeyX.replace('0x', "")}`, 'hex');
+    pubKeyX = pubKeyX.replace('0x', "");
+    while (pubKeyX.length < 64)
+        pubKeyX = `0${pubKeyX}`;
+    const strPubKey = `${pubKeyYParity == 1 ? "03" : "02"}${pubKeyX}`;
+    const _addr: string = publicKeyToAddress(strPubKey, 'hex');
     if (address.toLowerCase() != _addr.toLowerCase())
         throw {message: "group data is incorrect."}
 
