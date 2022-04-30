@@ -1,13 +1,13 @@
 [features]
 seeds = false
 [programs.localnet]
-muon_solana = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+muon_solana = "CTHYpZEvVp4TX1qgpoXkcjyNBENnZRdE36piJFQVVW1X"
 
 [registry]
 url = "https://anchor.projectserum.com"
 
 [provider]
-cluster = "localnet"
+cluster = "devnet"
 wallet = "/home/sadegh/.config/solana/id.json"
 
 [scripts]
