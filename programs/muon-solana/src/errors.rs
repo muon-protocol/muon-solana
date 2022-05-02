@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 
 #[error_code]
-pub enum Errors {
+pub enum MuonErrors {
     #[msg("Invalid Instruction")]
     InvalidInstruction,
     #[msg("Admin Already Initialized")]
