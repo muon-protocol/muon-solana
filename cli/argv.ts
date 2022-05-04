@@ -48,11 +48,6 @@ export async function handleArgs (handlers: MuonCommandHandlers) {
             {},
             handlers.verifyTest
         )
-        .command("estimate-lamports <numBytes>",
-            "estimate lamports to make account rent exempt.",
-            {},
-            handlers.estimateLamports
-        )
         .demandCommand()
         .help()
         .argv;

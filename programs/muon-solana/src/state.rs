@@ -2,7 +2,6 @@ use anchor_lang::{
     prelude::*,
     solana_program::{pubkey::Pubkey}
 };
-use crate::{types::u256};
 
 #[account]
 #[derive(Default)]

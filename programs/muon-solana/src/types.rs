@@ -1,3 +1,4 @@
+use anchor_lang::zero_copy;
 use borsh::{BorshDeserialize, BorshSerialize};
 use borsh::maybestd::io::Write;
 use spl_math::uint::U256;
@@ -15,14 +16,15 @@ impl u256 {
     }
 }
 
+#[zero_copy]
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct SchnorrSign {
     // s value of signature
-    pub signature: u256,
+    pub signature: [u8; 32],
     // ethereum address of signer
-    pub address: u256,
+    pub address: [u8; 32],
     // ethereum address of nonce
-    pub nonce: u256
+    pub nonce: [u8; 32]
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]

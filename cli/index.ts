@@ -1,7 +1,8 @@
 import * as argv from './argv';
 import * as Muon from './muon';
 import { PublicKey } from '@solana/web3.js'
-const {utils: {toBN}} = require('web3');
+import { callMuon } from './utils'
+const {utils: {toBN, soliditySha3}} = require('web3');
 
 async function run () {
     await argv.handleArgs({
@@ -34,6 +35,35 @@ async function run () {
             console.log(`list groups in progress ...`);
             let list = await Muon.listGroups()
             console.log(list)
+        },
+        verifyTest: async () => {
+            console.log(`verify-test in progress ...`);
+            console.log('waiting for muon ...')
+            let muonResponse = await callMuon({app: 'tss', method: 'test'})
+            console.dir(muonResponse, {depth: null})
+            if(muonResponse?.result?.confirmed){
+                let {
+                    result:{
+                        data: {result: appResult, init: {nonceAddress}},
+                        signatures:{0: {owner, signature}},
+                        cid
+                    }
+                } = muonResponse;
+                console.log('sending transaction ....')
+                let tx = await Muon.verifySignature(
+                    toBN(cid.slice(1)),
+                    toBN(soliditySha3(appResult)),
+                    {
+                        signature: toBN(signature),
+                        address: toBN(owner),
+                        nonce: toBN(nonceAddress)
+                    }
+                )
+                console.log("TX: ", tx);
+            }
+            else{
+                console.log('Muon not confirm the request.')
+            }
         }
     });
 }

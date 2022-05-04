@@ -9,7 +9,7 @@ declare_id!("BisbEpajuY8aT3GQ46bRhn2Xqmobqb41AQYNtkTqWsD7");
 
 use crate::{
     instructions::*,
-    types::u256
+    types::SchnorrSign
 };
 
 #[program]
@@ -34,6 +34,11 @@ pub mod muon_solana {
         storage.eth_address = eth_address;
         storage.pubkey_x = pubkey_x;
         storage.pubkey_y_parity = pubkey_y_parity;
+        Ok(())
+    }
+
+    pub fn verify_signature(ctx: Context<VerifySignature>, req_id: [u8; 36], hash: [u8; 32], sign: SchnorrSign) -> Result<()> {
+        msg!("TODO.");
         Ok(())
     }
 }

@@ -11,6 +11,12 @@ const programKeypair = Keypair.fromSecretKey(Buffer.from(MUON_KEYPAIR));
 const programID = programKeypair.publicKey;
 import {hex, bs58} from './utils';
 
+type SchnorrSign = {
+    signature: BN,
+    address: BN,
+    nonce: BN
+}
+
 var program;
 
 async function getProvider() {
@@ -128,4 +134,32 @@ export async function listGroups() {
             pubkeyYParity: g.account.pubkeyYParity
         }
     }))
+}
+
+export async function verifySignature(req_id: BN, hash: BN, sign: SchnorrSign) {
+    await init();
+    const [groupInfo, _bump1] = await anchor.web3.PublicKey.findProgramAddress(
+        [
+            Buffer.from('group-info'),
+            sign.address.toBuffer('be', 32)
+        ],
+        programID
+    );
+    console.log('group-info:', groupInfo.toBase58())
+    const payer = program.provider.wallet.payer;
+    const tx = await program.rpc.verifySignature(
+        req_id.toBuffer('be', 36),
+        hash.toBuffer('be', 32),
+        {
+            signature: sign.signature.toBuffer('be', 32),
+            address: sign.address.toBuffer('be', 32),
+            nonce: sign.nonce.toBuffer('be', 32),
+        },
+        {
+            accounts: {
+                groupInfo
+            },
+            signers: [payer],
+        })
+    return tx;
 }
