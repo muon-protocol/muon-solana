@@ -76,3 +76,8 @@ export async function getAdminInfo() {
     adminInfo.admin = bs58.encode(adminInfo.admin.toBuffer('be'));
     return adminInfo;
 }
+
+export async function addGroup() {
+    await init();
+    // TODO: call addGroup
+}

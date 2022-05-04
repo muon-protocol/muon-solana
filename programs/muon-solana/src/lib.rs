@@ -3,12 +3,13 @@ use anchor_lang::prelude::*;
 mod instructions;
 mod state;
 mod errors;
+mod types;
 
-declare_id!("HRYvN8EuFdi3N8BbyPhs3uHLSVr2RWNES4tR42Cs4xEv");
+declare_id!("BisbEpajuY8aT3GQ46bRhn2Xqmobqb41AQYNtkTqWsD7");
 
 use crate::{
     instructions::*,
-    state::*
+    types::u256
 };
 
 #[program]
@@ -23,8 +24,16 @@ pub mod muon_solana {
 
     pub fn transfer_admin(ctx: Context<TransferAdmin>, new_admin: Pubkey) -> Result<()> {
         let admin_info = &mut ctx.accounts.admin_info;
-        let admin = &mut ctx.accounts.admin;
         admin_info.admin = new_admin;
+        Ok(())
+    }
+
+    pub fn add_group(ctx: Context<AddGroup>, eth_address: u256, pubkey_x: u256, pubkey_y_parity: u8) -> Result<()> {
+        let storage = &mut ctx.accounts.storage;
+        storage.is_valid = true;
+        storage.eth_address = eth_address;
+        storage.pubkey_x = pubkey_x;
+        storage.pubkey_y_parity = pubkey_y_parity;
         Ok(())
     }
 }

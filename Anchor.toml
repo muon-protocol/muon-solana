@@ -1,7 +1,7 @@
 [features]
 seeds = false
 [programs.localnet]
-muon_solana = "HRYvN8EuFdi3N8BbyPhs3uHLSVr2RWNES4tR42Cs4xEv"
+muon_solana = "BisbEpajuY8aT3GQ46bRhn2Xqmobqb41AQYNtkTqWsD7"
 
 [registry]
 url = "https://anchor.projectserum.com"

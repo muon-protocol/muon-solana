@@ -1,28 +1,37 @@
 use borsh::{BorshDeserialize, BorshSerialize};
 use borsh::maybestd::io::Write;
-use primitive_types::{U256 as u256};
+use spl_math::uint::U256;
 use std::{convert::TryInto, fmt};
 
-#[derive(PartialEq)]
-pub struct U256Wrap(pub u256);
+#[derive(PartialEq, Default, Clone)]
+#[allow(non_camel_case_types)]
+pub struct u256(pub U256);
+
+impl u256 {
+    pub fn as_bytes(&self) -> [u8; 32]{
+        let mut bytes: [u8; 32] = [0; 32];
+        let _ = &self.0.to_big_endian(&mut bytes);
+        bytes
+    }
+}
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct SchnorrSign {
     // s value of signature
-    pub signature: U256Wrap,
+    pub signature: u256,
     // ethereum address of signer
-    pub address: U256Wrap,
+    pub address: u256,
     // ethereum address of nonce
-    pub nonce: U256Wrap
+    pub nonce: u256
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct SchnorrVerifyInstruction {
-    pub signing_pubkey_x: U256Wrap,
+    pub signing_pubkey_x: u256,
     pub signing_pubkey_y_parity: u8,
-    pub signature_s: U256Wrap,
-    pub msg_hash: U256Wrap,
-    pub nonce_address: U256Wrap
+    pub signature_s: u256,
+    pub msg_hash: u256,
+    pub nonce_address: u256
 }
 
 pub struct MuonRequestId (pub [u8; 36]);
@@ -65,7 +74,7 @@ impl std::fmt::Debug for MuonRequestId {
     }
 }
 
-impl BorshSerialize for U256Wrap {
+impl BorshSerialize for u256 {
     #[inline]
     fn serialize<W: Write>(&self, writer: &mut W) -> Result<(), std::io::Error> {
         let mut bytes: [u8; 32] = [0; 32];
@@ -74,11 +83,7 @@ impl BorshSerialize for U256Wrap {
     }
 }
 
-//fn pop(barry: &[u8]) -> &[u8; 32] {
-//    barry.try_into().expect("slice with incorrect length")
-//}
-
-impl BorshDeserialize for U256Wrap {
+impl BorshDeserialize for u256 {
     #[inline]
     fn deserialize(buf: &mut &[u8]) -> Result<Self, std::io::Error> {
         if buf.is_empty() {
@@ -87,19 +92,19 @@ impl BorshDeserialize for U256Wrap {
                 "Unexpected length of input",
             ));
         }
-        let res = U256Wrap(u256::from_little_endian(&buf[0..32]));
+        let res = u256(U256::from_little_endian(&buf[0..32]));
         *buf = &buf[32..];
         Ok(res)
     }
 }
 
-impl std::fmt::LowerHex for U256Wrap {
+impl std::fmt::LowerHex for u256 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "0x{:x}", self.0)
     }
 }
 
-impl std::fmt::Debug for U256Wrap {
+impl std::fmt::Debug for u256 {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "0x{:x}", self.0)
     }
