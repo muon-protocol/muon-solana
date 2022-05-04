@@ -28,7 +28,7 @@ pub mod muon_solana {
         Ok(())
     }
 
-    pub fn add_group(ctx: Context<AddGroup>, eth_address: u256, pubkey_x: u256, pubkey_y_parity: u8) -> Result<()> {
+    pub fn add_group(ctx: Context<AddGroup>, eth_address: [u8; 32], pubkey_x: [u8; 32], pubkey_y_parity: u8) -> Result<()> {
         let storage = &mut ctx.accounts.storage;
         storage.is_valid = true;
         storage.eth_address = eth_address;

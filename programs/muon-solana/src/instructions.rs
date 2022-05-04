@@ -37,7 +37,7 @@ pub struct TransferAdmin<'info> {
 }
 
 #[derive(Accounts)]
-#[instruction(eth_address: u256, pubkey_x: u256, pubkey_y_parity: u8)]
+#[instruction(eth_address: [u8; 32], pubkey_x: [u8; 32], pubkey_y_parity: u8)]
 pub struct AddGroup<'info> {
     #[account(
         init,
@@ -45,7 +45,7 @@ pub struct AddGroup<'info> {
         space = GroupInfo::space(),
         seeds = [
             b"group-info".as_ref(),
-            &eth_address.as_bytes()
+            &eth_address
         ],
         bump
     )]

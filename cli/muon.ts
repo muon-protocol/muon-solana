@@ -1,4 +1,5 @@
 import * as anchor from "@project-serum/anchor";
+import BN from 'bn.js';
 import {
     Program as AnchorProgram, AnchorProvider as Provider, web3, Wallet
 } from '@project-serum/anchor';
@@ -77,7 +78,54 @@ export async function getAdminInfo() {
     return adminInfo;
 }
 
-export async function addGroup() {
+export async function addGroup(ethAddress: BN, pubkeyX: BN, pubkeyYParity: boolean) {
     await init();
-    // TODO: call addGroup
+    const [storage, _bump1] = await anchor.web3.PublicKey.findProgramAddress(
+        [
+            Buffer.from('group-info'),
+            ethAddress.toBuffer('be', 32)
+        ],
+        programID
+    );
+    const [adminInfo, _bump2] = await anchor.web3.PublicKey.findProgramAddress(
+        [Buffer.from("admin")],
+        programID
+    )
+    const admin = program.provider.wallet.payer;
+    console.log({
+        storage: storage.toBase58(),
+        adminInfo: adminInfo.toBase58(),
+        admin: admin.publicKey.toBase58(),
+        rentProgram: anchor.web3.SYSVAR_RENT_PUBKEY.toBase58(),
+        systemProgram: anchor.web3.SystemProgram.programId.toBase58(),
+    })
+    const tx = await program.rpc.addGroup(
+        ethAddress.toBuffer('be', 32),
+        pubkeyX.toBuffer('be', 32),
+        pubkeyYParity,
+        {
+            accounts: {
+                storage,
+                adminInfo,
+                admin: admin.publicKey,
+                rentProgram: anchor.web3.SYSVAR_RENT_PUBKEY,
+                systemProgram: anchor.web3.SystemProgram.programId,
+            },
+            signers: [admin],
+        })
+    return tx;
+}
+
+export async function listGroups() {
+    await init();
+    const groups = await program.account.groupInfo.all();
+    return groups.map(g => ({
+        publicKey: bs58.encode(g.publicKey.toBuffer('b2')),
+        account: {
+            isValid: g.account.isValid,
+            ethAddress: Buffer.from(g.account.ethAddress).toString('hex'),
+            pubkeyX: Buffer.from(g.account.pubkeyX).toString('hex'),
+            pubkeyYParity: g.account.pubkeyYParity
+        }
+    }))
 }

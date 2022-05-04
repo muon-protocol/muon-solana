@@ -26,14 +26,15 @@ impl AdminInfo {
 #[derive(Default)]
 pub struct GroupInfo {
     pub is_valid: bool,
-    pub eth_address: u256,
-    pub pubkey_x: u256,
+    pub eth_address: [u8; 32],
+    pub pubkey_x: [u8; 32],
     pub pubkey_y_parity: u8
 }
 
 impl GroupInfo {
     pub fn is_initialized(&self) -> bool {
-        !self.eth_address.0.is_zero()
+//        !self.eth_address.0.is_zero()
+        self.eth_address.iter().any(|&byte| byte != 0u8)
     }
 
     pub fn space() -> usize {

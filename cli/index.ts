@@ -1,6 +1,7 @@
 import * as argv from './argv';
 import * as Muon from './muon';
 import { PublicKey } from '@solana/web3.js'
+const {utils: {toBN}} = require('web3');
 
 async function run () {
     await argv.handleArgs({
@@ -19,6 +20,20 @@ async function run () {
             let adminInfo = await Muon.getAdminInfo()
             console.log(adminInfo);
 
+        },
+        addGroup: async (argv) => {
+            console.log(`getAdminInfo in progress ...`);
+            let tx = await Muon.addGroup(
+                toBN(argv.ethAddress),
+                toBN(argv.pubkeyX),
+                [1, '1', true, 'true'].includes(argv.pubkeyYParity.toLowerCase())
+            )
+            console.log("AddGroup tx:", tx);
+        },
+        listGroup: async () => {
+            console.log(`list groups in progress ...`);
+            let list = await Muon.listGroups()
+            console.log(list)
         }
     });
 }
