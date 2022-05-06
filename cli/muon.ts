@@ -1,5 +1,6 @@
 import * as anchor from "@project-serum/anchor";
 import BN from 'bn.js';
+import EthWeb3 from 'web3';
 import {
     Program as AnchorProgram, AnchorProvider as Provider, web3, Wallet
 } from '@project-serum/anchor';
@@ -98,13 +99,6 @@ export async function addGroup(ethAddress: BN, pubkeyX: BN, pubkeyYParity: boole
         programID
     )
     const admin = program.provider.wallet.payer;
-    console.log({
-        storage: storage.toBase58(),
-        adminInfo: adminInfo.toBase58(),
-        admin: admin.publicKey.toBase58(),
-        rentProgram: anchor.web3.SYSVAR_RENT_PUBKEY.toBase58(),
-        systemProgram: anchor.web3.SystemProgram.programId.toBase58(),
-    })
     const tx = await program.rpc.addGroup(
         ethAddress.toBuffer('be', 32),
         pubkeyX.toBuffer('be', 32),
@@ -129,7 +123,7 @@ export async function listGroups() {
         publicKey: bs58.encode(g.publicKey.toBuffer('b2')),
         account: {
             isValid: g.account.isValid,
-            ethAddress: Buffer.from(g.account.ethAddress).toString('hex'),
+            ethAddress: EthWeb3.utils.toChecksumAddress("0x" + Buffer.from(g.account.ethAddress).toString('hex').substr(24)),
             pubkeyX: Buffer.from(g.account.pubkeyX).toString('hex'),
             pubkeyYParity: g.account.pubkeyYParity
         }

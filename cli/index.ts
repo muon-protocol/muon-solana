@@ -7,29 +7,29 @@ const {utils: {toBN, soliditySha3}} = require('web3');
 async function run () {
     await argv.handleArgs({
         initAdmin: async () => {
-            console.log(`InitializeAdmin in progress ...`);
+            console.log(`admin init in progress ...`);
             let tx = await Muon.initializeAdmin()
             console.log(`tx: ${tx}`);
         },
         transferAdmin: async (argv) => {
-            console.log(`TransferAdmin in progress ...`);
+            console.log(`admin transfer in progress ...`);
             let tx = await Muon.transferAdmin(new PublicKey(argv.newAdmin))
             console.log(`tx: ${tx}`);
         },
         getAdminInfo: async () => {
-            console.log(`getAdminInfo in progress ...`);
+            console.log(`admin retrieve info in progress ...`);
             let adminInfo = await Muon.getAdminInfo()
             console.log(adminInfo);
 
         },
         addGroup: async (argv) => {
-            console.log(`getAdminInfo in progress ...`);
+            console.log(`add group in progress ...`);
             let tx = await Muon.addGroup(
                 toBN(argv.ethAddress),
                 toBN(argv.pubkeyX),
                 [1, '1', true, 'true'].includes(argv.pubkeyYParity.toLowerCase())
             )
-            console.log("AddGroup tx:", tx);
+            console.log("add group tx:", tx);
         },
         listGroup: async () => {
             console.log(`list groups in progress ...`);
@@ -37,7 +37,7 @@ async function run () {
             console.log(list)
         },
         verifyTest: async () => {
-            console.log(`verify-test in progress ...`);
+            console.log(`verify test in progress ...`);
             console.log('waiting for muon ...')
             let muonResponse = await callMuon({app: 'tss', method: 'test'})
             console.dir(muonResponse, {depth: null})
