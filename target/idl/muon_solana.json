@@ -1,0 +1,287 @@
+{
+  "version": "0.1.0",
+  "name": "muon_solana",
+  "instructions": [
+    {
+      "name": "initializeAdmin",
+      "accounts": [
+        {
+          "name": "adminInfo",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "rentProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "transferAdmin",
+      "accounts": [
+        {
+          "name": "adminInfo",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "newAdmin",
+          "type": "publicKey"
+        }
+      ]
+    },
+    {
+      "name": "addGroup",
+      "accounts": [
+        {
+          "name": "storage",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "adminInfo",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "admin",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "rentProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "ethAddress",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "pubkeyX",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "pubkeyYParity",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "verifySignature",
+      "accounts": [
+        {
+          "name": "groupInfo",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "reqId",
+          "type": {
+            "defined": "MuonRequestId"
+          }
+        },
+        {
+          "name": "hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "sign",
+          "type": {
+            "defined": "SchnorrSign"
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "AdminInfo",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "publicKey"
+          },
+          {
+            "name": "last",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "GroupInfo",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "isValid",
+            "type": "bool"
+          },
+          {
+            "name": "ethAddress",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "pubkeyX",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "pubkeyYParity",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "SchnorrSign",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "signature",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "address",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "nonce",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "MuonRequestId",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bytes",
+            "type": {
+              "array": [
+                "u8",
+                36
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "MuonErrors",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "InvalidInstruction"
+          },
+          {
+            "name": "AdminAlreadyInitialized"
+          },
+          {
+            "name": "InvalidAdminStorage"
+          },
+          {
+            "name": "InvalidAdminAccount"
+          },
+          {
+            "name": "NotRentExempt"
+          },
+          {
+            "name": "AdminRestricted"
+          },
+          {
+            "name": "MissingAdminSignature"
+          },
+          {
+            "name": "InvalidGroupAccountOwner"
+          },
+          {
+            "name": "LargePubkeyX"
+          },
+          {
+            "name": "ZeroSignatureData"
+          },
+          {
+            "name": "NotVerified"
+          }
+        ]
+      }
+    }
+  ]
+}
