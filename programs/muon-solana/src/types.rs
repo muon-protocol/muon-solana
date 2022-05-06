@@ -1,7 +1,7 @@
 use anchor_lang::zero_copy;
 use borsh::{BorshDeserialize, BorshSerialize};
 use borsh::maybestd::io::Write;
-use spl_math::uint::U256;
+use primitive_types::U256;
 use std::{convert::TryInto, fmt};
 
 #[derive(PartialEq, Default, Clone)]
@@ -36,12 +36,13 @@ pub struct SchnorrVerifyInstruction {
     pub nonce_address: u256
 }
 
-pub struct MuonRequestId (pub [u8; 36]);
+#[zero_copy]
+pub struct MuonRequestId {pub bytes: [u8; 36]}
 
 impl fmt::LowerHex for MuonRequestId {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "f")?;
-        for i in &self.0[..] {
+        for i in &self.bytes[..] {
             write!(f, "{:02x}", i)?;
         }
         Ok(())
@@ -51,7 +52,7 @@ impl fmt::LowerHex for MuonRequestId {
 impl BorshSerialize for MuonRequestId {
     #[inline]
     fn serialize<W: Write>(&self, writer: &mut W) -> Result<(), std::io::Error> {
-        writer.write_all(&self.0)
+        writer.write_all(&self.bytes)
     }
 }
 
@@ -66,13 +67,13 @@ impl BorshDeserialize for MuonRequestId {
         }
         let res: [u8; 36] = buf[0..36].try_into().expect("slice with incorrect length");
         *buf = &buf[36..];
-        Ok(MuonRequestId(res))
+        Ok(MuonRequestId {bytes: res})
     }
 }
 
 impl std::fmt::Debug for MuonRequestId {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "{:02x?}", self.0)
+        write!(f, "{:02x?}", self.bytes)
     }
 }
 

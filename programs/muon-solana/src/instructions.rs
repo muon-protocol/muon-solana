@@ -2,7 +2,10 @@ use anchor_lang::prelude::*;
 use crate::{
     state::*,
     errors::MuonErrors,
-    types::SchnorrSign
+    types::{
+        SchnorrSign,
+        MuonRequestId
+    }
 };
 
 #[derive(Accounts)]
@@ -61,10 +64,11 @@ pub struct AddGroup<'info> {
 }
 
 #[derive(Accounts)]
-#[instruction(req_id: [u8; 36], hash: [u8; 32], sign: SchnorrSign)]
+#[instruction(req_id: MuonRequestId, hash: [u8; 32], sign: SchnorrSign)]
 pub struct VerifySignature<'info> {
     #[account(
-        constraint = group_info.is_valid == true @ MuonErrors::NotVerified
+        constraint = group_info.is_valid == true @ MuonErrors::NotVerified,
+        constraint = group_info.eth_address == sign.address
     )]
     pub group_info: Account<'info, GroupInfo>
 }

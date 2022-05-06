@@ -4,12 +4,14 @@ mod instructions;
 mod state;
 mod errors;
 mod types;
+mod utils;
 
-declare_id!("BisbEpajuY8aT3GQ46bRhn2Xqmobqb41AQYNtkTqWsD7");
+declare_id!("9jmDacsonqdLCn3a9NR3YiAXDnwXcduHvGMnip2jTjgd");
 
 use crate::{
     instructions::*,
-    types::SchnorrSign
+    types::{ SchnorrSign, MuonRequestId },
+    utils::schnorr_verify,
 };
 
 #[program]
@@ -37,8 +39,23 @@ pub mod muon_solana {
         Ok(())
     }
 
-    pub fn verify_signature(ctx: Context<VerifySignature>, req_id: [u8; 36], hash: [u8; 32], sign: SchnorrSign) -> Result<()> {
-        msg!("TODO.");
+    pub fn verify_signature(ctx: Context<VerifySignature>, req_id: MuonRequestId, hash: [u8; 32], sign: SchnorrSign) -> Result<()> {
+        let group_info = &mut ctx.accounts.group_info;
+
+        schnorr_verify(
+            // [u8; 32] signer x
+            group_info.pubkey_x,
+            // [u8] signer y parity
+            group_info.pubkey_y_parity,
+            // [u8; 32] signature s
+            sign.signature,
+            // [u8; 32] msg hash
+            hash,
+            // [u8; 32] nonce address
+            sign.nonce
+        )?;
+
+        msg!("req_id: [{:x}]", req_id);
         Ok(())
     }
 }
