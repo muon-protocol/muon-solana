@@ -21,7 +21,8 @@
     "test:program-rust": "cargo test-bpf --manifest-path=./src/muon-program/Cargo.toml",
     "pretty": "prettier --write '{,src/**/}*.ts'",
   
-    "build-v4": "cargo build-bpf --manifest-path=./src/muonv04-program/Cargo.toml --bpf-out-dir=dist/muonv04"
+    "build-v4": "cargo build-bpf --manifest-path=./src/muonv04-program/Cargo.toml --bpf-out-dir=dist/muonv04",
+    "build-v4-sample": "cargo build-bpf --manifest-path=./src/samplev04-program/Cargo.toml --bpf-out-dir=dist/samplev04"
   },
   "dependencies": {
     "@solana/web3.js": "^1.7.0",

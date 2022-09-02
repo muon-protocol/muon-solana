@@ -10,7 +10,7 @@ use solana_program::{
 use crate::{
     types::{U256Wrap, SchnorrSign, GroupPubKey, MuonRequestId},
     instructions::MuonInstruction,
-    state::{GroupInfo, AdminInfo},
+    state::{AdminInfo},
     errors::MuonError,
     utils::schnorr_verify
 };
@@ -188,7 +188,10 @@ impl Processor {
     ) -> ProgramResult {
 
         // Iterating accounts is safer then indexing
-        let accounts_iter = &mut accounts.iter();
+
+        //TODO: should we check account and program_id?
+
+        //let accounts_iter = &mut accounts.iter();
 
         // Get the account to store admin info
         // let group_info_storage = next_account_info(accounts_iter)?;
@@ -225,6 +228,9 @@ impl Processor {
         )?;
 
         msg!("req_id: [{:x}]", req_id);
+
+        //TODO: emit an event.
+        // maybe using https://docs.rs/anchor-lang/latest/anchor_lang/macro.emit.html
 
         Ok(())
     }

@@ -5,7 +5,7 @@ pub mod instructions;
 pub mod state;
 pub mod errors;
 
-solana_program::declare_id!("8T4P7taikE3EfoEogURTdF8TDpSEVk74KuQovw7Yz58t");
+solana_program::declare_id!("6XFPBb6wj4NemqgQN7pP3GwHPCjpFCv6rx7ZzzTfSYac");
 
 #[cfg(not(feature = "no-entrypoint"))]
 pub mod entrypoint;
