@@ -1,6 +1,3 @@
-import {SayHello, schema as SayHelloSchema} from './say-hello'
-import {Increment, schema as IncSchema} from './increment'
-import {Decrement, schema as DecSchema} from './decrement'
 import {InitializeAdmin, schema as InitializeAdminSchema} from './initialize-admin'
 import {TransferAdmin, schema as TransferAdminSchema} from './transfer-admin'
 import {AddGroup, schema as AddGroupSchema} from './add-group'
@@ -11,19 +8,6 @@ import {SampleAppInstruction, schema as SampleAppInstructionSchema} from './samp
 import * as borsh from 'borsh';
 import {PublicKey} from "@solana/web3.js";
 import BN from "bn.js";
-
-export const sayHello = function () {
-    const serialized = borsh.serialize(SayHelloSchema, new SayHello());
-    return Buffer.from(Uint8Array.of(0, ...serialized));
-}
-export const increment = function (amount: number) {
-    const serialized = borsh.serialize(IncSchema, new Increment({amount}));
-    return Buffer.from(Uint8Array.of(1, ...serialized));
-}
-export const decrement = function (amount: number) {
-    const serialized = borsh.serialize(DecSchema, new Decrement({amount}));
-    return Buffer.from(Uint8Array.of(2, ...serialized));
-}
 
 export const initializeAdmin = function () {
     const serialized = borsh.serialize(InitializeAdminSchema, new InitializeAdmin());

@@ -118,10 +118,10 @@ pub fn schnorr_verify(
     nonce_address: u256
 ) -> Result<bool, MuonError> {
 
-    let Q:u256 = u256::from_big_endian(&Q_BYTES);
-    let Q_HALF = (Q >> 1) + 1;
+    let q:u256 = u256::from_big_endian(&Q_BYTES);
+    let q_half = (q >> 1) + 1;
 
-    if signing_pubkey_x >= Q_HALF {
+    if signing_pubkey_x >= q_half {
         return Err(MuonError::LargePubkeyX)
     }
 
@@ -131,11 +131,11 @@ pub fn schnorr_verify(
 
     let e = make_msg_challenge(nonce_address, msg_hash).unwrap();
 
-    let args_z: u256 = mod_mul(mod_neg(signing_pubkey_x, Q), signature_s, Q);
+    let args_z: u256 = mod_mul(mod_neg(signing_pubkey_x, q), signature_s, q);
 
     let args_v: u8 = signing_pubkey_y_parity;
     let args_r: u256 = signing_pubkey_x;
-    let args_s: u256 = mod_mul(signing_pubkey_x, e, Q);
+    let args_s: u256 = mod_mul(signing_pubkey_x, e, q);
 
     let args_rs: u512 = (u512::from(args_r) << 256) + args_s;
 

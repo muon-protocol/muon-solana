@@ -2,8 +2,7 @@ use borsh::{BorshDeserialize, BorshSerialize};
 use primitive_types::{ U256 as u256};
 use solana_program::{
     pubkey::{
-        Pubkey,
-        ParsePubkeyError
+        Pubkey
     },
     instruction::{
         Instruction,

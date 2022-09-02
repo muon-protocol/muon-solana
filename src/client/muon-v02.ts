@@ -38,15 +38,16 @@ let connection: Connection;
 let payer: Keypair;
 
 /**
- * Hello world's program id
+ * Muon's program info
  */
 let programKeypair: Keypair;
 let programId: PublicKey;
-let sampleKeypair: Keypair;
 
 /**
- * The public key of the account we are saying hello to
+ * Sample program info
  */
+let sampleKeypair: Keypair;
+
 let adminStoragePubkey: PublicKey;
 
 /**
@@ -71,23 +72,6 @@ const PROGRAM_KEYPAIR_PATH = path.join(PROGRAM_PATH, 'muonv02-keypair.json');
 const SAMPLE_KEYPAIR_PATH = path.join(SAMPLE_PATH, 'muon_sample_program-keypair.json');
 
 
-class SeyHello {
-}
-
-
-class Increment {
-    amount = 0
-
-    constructor(fields: { amount: number } | undefined = undefined) {
-        if (fields) {
-            this.amount = fields.amount;
-        }
-    }
-}
-
-/**
- * The state of a greeting account managed by the hello world program
- */
 class AdminInfo {
     admin: Uint8Array = new Uint8Array();
     counter = 0;
@@ -117,7 +101,7 @@ class GroupInfo {
 }
 
 /**
- * Borsh schema definition for greeting accounts
+ * Borsh schema definition
  */
 const AdminInfoSchema = new Map([
     [AdminInfo, {kind: 'struct', fields: [['admin', [32]], ['counter', 'u32']]}],
@@ -132,10 +116,6 @@ const GroupInfoSchema = new Map([
         ]
     }],
 ]);
-
-const SeyHelloSchema = new Map([
-    [SeyHello, {kind: 'struct', fields: []}]
-])
 
 /**
  * The expected size of each AdminInfo account.
@@ -168,7 +148,7 @@ export async function establishPayer(): Promise<void> {
     if (!payer) {
         const {feeCalculator} = await connection.getRecentBlockhash();
 
-        // Calculate the cost to fund the greeter account
+        // Calculate the cost
         fees += await connection.getMinimumBalanceForRentExemption(ADMIN_INFO_SIZE);
 
         // Calculate the cost of sending transactions
@@ -198,7 +178,7 @@ export async function establishPayer(): Promise<void> {
 }
 
 /**
- * Check if the hello world BPF program has been deployed
+ * Check if the Muon BPF program has been deployed
  */
 export async function checkProgram(): Promise<void> {
     // Read program id from keypair file
@@ -237,7 +217,6 @@ export async function checkProgram(): Promise<void> {
     }
     console.log(`Using program ${programId.toBase58()}`);
 
-    // Derive the address (public key) of a greeting account from the program so that it's easy to find later.
     const ADMIN_STORAGE_SEED = 'admin';
     adminStoragePubkey = await PublicKey.createWithSeed(
         programId,
@@ -245,7 +224,6 @@ export async function checkProgram(): Promise<void> {
         programId,
     );
 
-    // Check if the greeting account has already been created
     const adminInfo = await connection.getAccountInfo(adminStoragePubkey);
     if (adminInfo === null) {
         console.log(
@@ -379,7 +357,6 @@ export async function addGroup(address: string, pubKeyX: string, pubKeyYParity: 
         programId,
     );
 
-    // Check if the greeting account has already been created
     const groupInfo = await connection.getAccountInfo(groupStoragePubkey);
     if (groupInfo === null) {
         console.log('Creating group storage account', groupStoragePubkey.toBase58());
@@ -446,9 +423,18 @@ export async function addGroup(address: string, pubKeyX: string, pubKeyYParity: 
 }
 
 export async function getGroupStorage(address: string) {
+    console.log("getGroupStorage::address", address);
+    console.log("getGroupStorage::programId", programId);    
     let hexVal = address.toLowerCase().replace('0x', '');
     const addressInBase58 = bs58.encode(hex.decode(hexVal).reverse())
-    return await connection.getProgramAccounts(programId,{filters: [{memcmp: {bytes: addressInBase58, offset: 1}}]});
+    //return await connection.getProgramAccounts(programId,{filters: [{memcmp: {bytes: addressInBase58, offset: 1}}]});
+
+    let accs = await connection.getProgramAccounts(programId,{});
+    console.log("accs", accs);
+    accs.map(x => {
+      console.log(x.pubkey.toBase58())
+    })
+    return accs;
 }
 
 export async function getGroupInfo(group: PublicKey) {
@@ -469,7 +455,7 @@ export async function getGroupInfo(group: PublicKey) {
 export async function reportAdminInfo(): Promise<void> {
     const accountInfo = await connection.getAccountInfo(adminStoragePubkey);
     if (accountInfo === null) {
-        throw 'Error: cannot find the greeted account';
+        throw 'Error: cannot find the muon account';
     }
     let adminInfo = borsh.deserialize(
         AdminInfoSchema,
@@ -520,7 +506,6 @@ export async function sampleCall(
 export async function verifySignature(reqId: string, hash: string, sign: any, groupStoragePubkey: PublicKey, user: Keypair) {
     console.log('verify signature ...');
 
-    // Check if the greeting account has already been created
     const groupInfo = await connection.getAccountInfo(groupStoragePubkey);
     if (groupInfo === null) {
         throw {message: `group storage not exist ${groupStoragePubkey.toBase58()}`};

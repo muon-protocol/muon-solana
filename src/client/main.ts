@@ -157,6 +157,8 @@ async function verifyProcess () {
     if(!success || !confirmed)
         throw "Muon request failed";
 
+    console.log(sign)
+
     console.log(`finding groupStorageAccount of owner ${sign.owner} ...`);
     const groupStorageAccount = (await getGroupStorage(sign.owner))[0].pubkey;
     console.log(`groupStorageAccount: ${groupStorageAccount.toBase58()}`);
