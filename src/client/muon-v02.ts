@@ -427,7 +427,7 @@ export async function getGroupStorage(address: string) {
     console.log("getGroupStorage::programId", programId);    
     let hexVal = address.toLowerCase().replace('0x', '');
     const addressInBase58 = bs58.encode(hex.decode(hexVal).reverse())
-    //return await connection.getProgramAccounts(programId,{filters: [{memcmp: {bytes: addressInBase58, offset: 1}}]});
+    // return await connection.getProgramAccounts(programId,{filters: [{memcmp: {bytes: addressInBase58, offset: 1}}]});
 
     let accs = await connection.getProgramAccounts(programId,{});
     console.log("accs", accs);

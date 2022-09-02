@@ -7,3 +7,5 @@ package-lock.json
 src/client/util/store
 test-ledger/
 .DS_Store
+/target/
+
