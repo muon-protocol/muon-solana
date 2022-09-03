@@ -39,6 +39,8 @@ impl Processor {
     ) -> ProgramResult {
         msg!("sample program start.");
 
+        msg!("instruction_data {}", instruction_data)
+
 //        let instruction = VerifyInstruction::unpack(instruction_data)?;
 
         let instruction = Instruction::try_from_slice(instruction_data)

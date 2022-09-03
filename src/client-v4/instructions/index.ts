@@ -9,18 +9,6 @@ import * as borsh from 'borsh';
 import {PublicKey} from "@solana/web3.js";
 import BN from "bn.js";
 
-export const verifySchnorrSign = function (reqId: Buffer, hash: BN, signature: BN, address: BN, nonce: BN) {
-    const serialized = borsh.serialize(VerifySchnorrSignSchema, new VerifySchnorrSign({
-        req_id:reqId,
-        hash: hash,
-        signature,
-        address,
-        nonce
-    }));
-    return Buffer.from(Uint8Array.of(3, ...serialized));
-}
-
-
 export const initializeAdmin = function () {
     const serialized = borsh.serialize(InitializeAdminSchema, new InitializeAdmin());
     return Buffer.from(Uint8Array.of(0, ...serialized));
@@ -34,6 +22,17 @@ export const transferAdmin = function () {
 export const addGroup = function (eth_address: BN, pubkey_x: BN, pubkey_y_parity: number) {
     const serialized = borsh.serialize(AddGroupSchema, new AddGroup({eth_address, pubkey_x, pubkey_y_parity}));
     return Buffer.from(Uint8Array.of(2, ...serialized));
+}
+
+export const verifySchnorrSign = function (reqId: Buffer, hash: BN, signature: BN, address: BN, nonce: BN) {
+    const serialized = borsh.serialize(VerifySchnorrSignSchema, new VerifySchnorrSign({
+        req_id:reqId,
+        hash: hash,
+        signature,
+        address,
+        nonce
+    }));
+    return Buffer.from(Uint8Array.of(3, ...serialized));
 }
 
 export const sampleAppCall = function (req_id: Buffer, msg: string, signature_s: BN, owner: BN, nonce: BN) {

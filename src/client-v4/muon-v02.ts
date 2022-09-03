@@ -53,8 +53,8 @@ let adminStoragePubkey: PublicKey;
 /**
  * Path to program files
  */
-const PROGRAM_PATH = path.resolve(__dirname, '../../dist/muon');
-const SAMPLE_PATH = path.resolve(__dirname, '../../dist/sample');
+const PROGRAM_PATH = path.resolve(__dirname, '../../dist/muonv04');
+const SAMPLE_PATH = path.resolve(__dirname, '../../dist/samplev04');
 
 /**
  * Path to program shared object file which should be deployed on chain.
@@ -62,14 +62,14 @@ const SAMPLE_PATH = path.resolve(__dirname, '../../dist/sample');
  *   - `npm run build:program-c`
  *   - `npm run build:program-rust`
  */
-const PROGRAM_SO_PATH = path.join(PROGRAM_PATH, 'muonv02.so');
+const PROGRAM_SO_PATH = path.join(PROGRAM_PATH, 'muonv04.so');
 
 /**
  * Path to the keypair of the deployed program.
  * This file is created when running `solana program deploy dist/program/muonv02.so`
  */
-const PROGRAM_KEYPAIR_PATH = path.join(PROGRAM_PATH, 'muonv02-keypair.json');
-const SAMPLE_KEYPAIR_PATH = path.join(SAMPLE_PATH, 'muon_sample_program-keypair.json');
+const PROGRAM_KEYPAIR_PATH = path.join(PROGRAM_PATH, 'muonv04-keypair.json');
+const SAMPLE_KEYPAIR_PATH = path.join(SAMPLE_PATH, 'muonv04_sample_program-keypair.json');
 
 
 class AdminInfo {
@@ -183,7 +183,7 @@ export async function establishPayer(): Promise<void> {
 export async function checkProgram(): Promise<void> {
     // Read program id from keypair file
     try {
-        programKeypair = await createKeypairFromFile(PROGRAM_KEYPAIR_PATH);
+        programKeypair = await createKeypairFromFile(SAMPLE_KEYPAIR_PATH);
         programId = programKeypair.publicKey;
         // schnorrLibKeypair = await createKeypairFromFile(SCHNORR_LIB_KEYPAIR_PATH);
     } catch (err) {
@@ -225,8 +225,6 @@ export async function checkProgram(): Promise<void> {
     );
 
     const adminInfo = await connection.getAccountInfo(adminStoragePubkey);
-    console.log(Instructions.initializeAdmin());
-    
     if (adminInfo === null) {
         console.log(
             'Creating account',
@@ -236,7 +234,10 @@ export async function checkProgram(): Promise<void> {
         const lamports = await connection.getMinimumBalanceForRentExemption(
             ADMIN_INFO_SIZE,
         );
-
+        console.log(programId.toBase58(), 
+            "programId", Instructions.initializeAdmin(),
+            payer.publicKey.toBase58()
+            );
         const transaction = new Transaction()
             .add(
                 SystemProgram.createAccountWithSeed({
@@ -261,7 +262,7 @@ export async function checkProgram(): Promise<void> {
                 programId,
                 data: Instructions.initializeAdmin()
             })
-        const txHash = await sendAndConfirmTransaction(connection, transaction, [payer, programKeypair]);
+        const txHash = await sendAndConfirmTransaction(connection, transaction, [payer, sampleKeypair]);
         console.log('storage creation tx: ', txHash);
     } else {
         console.log(`AdminInfo storage ${adminStoragePubkey.toBase58()} exist.`);

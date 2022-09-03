@@ -11,6 +11,8 @@ use muonv04::{
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub enum Instruction {
+    InitializeAdmin,
+    
     Verify {
         req_id: MuonRequestId,
         msg: String,
@@ -18,8 +20,6 @@ pub enum Instruction {
         owner: U256Wrap,
         nonce: U256Wrap
     },
-
-    InitializeAdmin,
 
     TransferAdmin,
 

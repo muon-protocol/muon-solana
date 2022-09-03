@@ -43,6 +43,10 @@ impl Processor {
     ) -> ProgramResult {
         msg!("sample program start.");
 
+        msg!("instruction_data {:?} {}", instruction_data,
+            instruction_data.len()
+        );
+
 //        let instruction = VerifyInstruction::unpack(instruction_data)?;
 
         let instruction = Instruction::try_from_slice(instruction_data)
@@ -73,12 +77,6 @@ impl Processor {
         owner: U256Wrap,
         nonce: U256Wrap,
     ) -> ProgramResult {
-
-//        msg!(
-//            "req_id: {:x}, msg: {}, signature_s: {:02x}, owner: {:02x}, nonce: {:02x}",
-//            req_id, msg, signature_s, owner, nonce
-//        );
-
         // Iterating accounts is safer then indexing
         let accounts_iter = &mut accounts.iter();
 
@@ -94,6 +92,9 @@ impl Processor {
 
         let msg_hash = Self::hash_parameters(msg);
 //        msg!("msg_hash: {:x}.", msg_hash);
+
+        // Increment and store the number of times the account has been greeted
+        let group_info = GroupPubKey::try_from_slice(&group_info_storage.data.borrow())?;
 
         //let parity: U256Wrap = U256Wrap{0:};
         let ix = MuonInstruction::verify(
@@ -111,8 +112,8 @@ impl Processor {
             nonce.0,
 
             //TODO: FixMe
-            u256([0,0,0,0]), // pub_key_x
-            0, //pub_key_parity
+            group_info.x.0, // pub_key_x
+            group_info.parity, //pub_key_parity
         );
 
         invoke(

@@ -22,7 +22,9 @@
     "pretty": "prettier --write '{,src/**/}*.ts'",
   
     "build-v4": "cargo build-bpf --manifest-path=./src/muonv04-program/Cargo.toml --bpf-out-dir=dist/muonv04",
-    "build-v4-sample": "cargo build-bpf --manifest-path=./src/samplev04-program/Cargo.toml --bpf-out-dir=dist/samplev04"
+    "build-v4-sample": "cargo build-bpf --manifest-path=./src/samplev04-program/Cargo.toml --bpf-out-dir=dist/samplev04",
+
+    "start-v4": "ts-node src/client-v4/main.ts"
   },
   "dependencies": {
     "@solana/web3.js": "^1.7.0",
