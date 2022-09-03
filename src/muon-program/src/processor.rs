@@ -60,7 +60,7 @@ impl Processor {
 
         // Increment and store the number of times the account has been greeted
         let mut admin_info = AdminInfo::try_from_slice(&admin_info_storage.data.borrow())?;
-//    msg!("TransferAdmin from {} to {}...", admin_info.admin, admin);
+        //    msg!("TransferAdmin from {} to {}...", admin_info.admin, admin);
 
         let admin = next_account_info(accounts_iter)?;
 
@@ -95,7 +95,7 @@ impl Processor {
 
         // Increment and store the number of times the account has been greeted
         let mut admin_info = AdminInfo::try_from_slice(&admin_info_storage.data.borrow())?;
-//    msg!("TransferAdmin from {} to {}...", admin_info.admin, admin);
+        //    msg!("TransferAdmin from {} to {}...", admin_info.admin, admin);
 
         // The account must be owned by the program in order to modify its data
         if !admin_info.is_initialized() {

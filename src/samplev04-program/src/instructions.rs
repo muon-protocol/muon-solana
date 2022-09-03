@@ -17,5 +17,14 @@ pub enum Instruction {
         signature_s: U256Wrap,
         owner: U256Wrap,
         nonce: U256Wrap
+    },
+
+    InitializeAdmin,
+
+    TransferAdmin,
+
+    UpdateGroupPubKey {
+        pubkey_x: U256Wrap,
+        pubkey_y_parity: u8,
     }
 }
