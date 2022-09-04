@@ -13,6 +13,8 @@ use muonv04::{
 pub enum Instruction {
     InitializeAdmin,
     
+    TransferAdmin,
+
     Verify {
         req_id: MuonRequestId,
         msg: String,
@@ -20,8 +22,6 @@ pub enum Instruction {
         owner: U256Wrap,
         nonce: U256Wrap
     },
-
-    TransferAdmin,
 
     UpdateGroupPubKey {
         pubkey_x: U256Wrap,

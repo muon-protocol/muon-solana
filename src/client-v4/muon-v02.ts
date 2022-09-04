@@ -341,7 +341,7 @@ export async function getMinimumBalanceForRentExemption(numBytes: number): Promi
     );
 }
 
-export async function addGroup(address: string, pubKeyX: string, pubKeyYParity: number, admin: Keypair) {
+export async function addGroup(pubKeyX: string, pubKeyYParity: number, admin: Keypair) {
     console.log('adding group ...');
     pubKeyX = pubKeyX.replace('0x', "");
     while (pubKeyX.length < 64)
@@ -458,7 +458,7 @@ export async function getGroupInfo(group: PublicKey) {
 export async function reportAdminInfo(): Promise<void> {
     const accountInfo = await connection.getAccountInfo(adminStoragePubkey);
     if (accountInfo === null) {
-        throw 'Error: cannot find the muon account';
+        throw 'Error: cannot find the sample account';
     }
     let adminInfo = borsh.deserialize(
         AdminInfoSchema,

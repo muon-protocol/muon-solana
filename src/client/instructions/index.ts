@@ -1,5 +1,4 @@
 import {InitializeAdmin, schema as InitializeAdminSchema} from './initialize-admin'
-import {TransferAdmin, schema as TransferAdminSchema} from './transfer-admin'
 import {AddGroup, schema as AddGroupSchema} from './add-group'
 import {VerifySchnorrSign, schema as VerifySchnorrSignSchema} from './verify-schnorr-sign'
 import {SchnorrCall, schema as SchnorrCallSchema} from './schnorr-call'
