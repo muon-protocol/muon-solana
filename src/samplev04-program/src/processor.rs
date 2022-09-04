@@ -53,8 +53,8 @@ impl Processor {
             .map_err(|e| ProgramError::InvalidInstructionData)?;
 
         match instruction {
-            Instruction::Verify{req_id, msg, signature_s, owner, nonce} => {
-                Self::process_verify(program_id, accounts, req_id, msg, signature_s, owner, nonce)
+            Instruction::Verify{req_id, msg, signature_s, nonce} => {
+                Self::process_verify(program_id, accounts, req_id, msg, signature_s, nonce)
             }
             Instruction::InitializeAdmin => {
                 Self::process_initialize_admin(program_id, accounts)
@@ -74,9 +74,9 @@ impl Processor {
         req_id: MuonRequestId,
         msg: String,
         signature_s: U256Wrap,
-        owner: U256Wrap,
         nonce: U256Wrap,
     ) -> ProgramResult {
+        msg!("start to verify");
         // Iterating accounts is safer then indexing
         let accounts_iter = &mut accounts.iter();
 
@@ -88,13 +88,15 @@ impl Processor {
 //        msg!("caller: {:x?}.", caller.key);
 
         let muon = next_account_info(accounts_iter)?;
-//        msg!("muon: {:x?}.", muon.key);
+        msg!("muon: {:x?}.", muon.key);
 
         let msg_hash = Self::hash_parameters(msg);
-//        msg!("msg_hash: {:x}.", msg_hash);
+        msg!("msg_hash: {:x}.", msg_hash);
 
+        msg!("Loading group_info");
         // Increment and store the number of times the account has been greeted
         let group_info = GroupPubKey::try_from_slice(&group_info_storage.data.borrow())?;
+        msg!("group_info: {:?}.", group_info);
 
         //let parity: U256Wrap = U256Wrap{0:};
         let ix = MuonInstruction::verify(
@@ -106,8 +108,6 @@ impl Processor {
             msg_hash,
             // s part of signature
             signature_s.0,
-            // ethereum address of signer as u256.
-            owner.0,
             // ethereum address of signature nonce.
             nonce.0,
 

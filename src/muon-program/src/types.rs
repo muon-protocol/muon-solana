@@ -28,7 +28,7 @@ pub struct SchnorrVerifyInstruction {
     pub nonce_address: U256Wrap
 }
 
-pub struct MuonRequestId (pub [u8; 36]);
+pub struct MuonRequestId (pub [u8; 256]);
 
 impl fmt::LowerHex for MuonRequestId {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

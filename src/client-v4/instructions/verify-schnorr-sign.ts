@@ -4,7 +4,6 @@ export class VerifySchnorrSign {
     req_id = Buffer.from([]);
     hash = new BN('0');
     signature = new BN('0');
-    address = new BN('0');
     nonce = new BN('0');
 
     constructor(fields: { req_id: Buffer, hash: BN, signature: BN, address: BN, nonce: BN  } | undefined = undefined) {
@@ -14,7 +13,6 @@ export class VerifySchnorrSign {
             this.req_id = fields.req_id;
             this.hash = fields.hash;
             this.signature = fields.signature;
-            this.address = fields.address;
             this.nonce = fields.nonce;
         }
     }
@@ -27,7 +25,6 @@ export const schema = new Map([
             ['req_id', [36]],
             ['hash', 'u256'],
             ['signature', 'u256'],
-            ['address', 'u256'],
             ['nonce', 'u256']
         ]
     }]

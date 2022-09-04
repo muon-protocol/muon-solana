@@ -68,8 +68,6 @@ impl MuonInstruction {
         hash: u256,
         // s part of signature
         signature_s: u256,
-        // ethereum address of signer as u256.
-        signer: u256,
         // ethereum address of signature nonce.
         nonce: u256,
         pub_key_x: u256,
@@ -84,7 +82,6 @@ impl MuonInstruction {
                 hash: U256Wrap(hash),
                 sign: SchnorrSign {
                     signature: U256Wrap(signature_s),
-                    address: U256Wrap(signer),
                     nonce: U256Wrap(nonce)
                 },
                 pub_key: GroupPubKey {

@@ -214,7 +214,7 @@ impl Processor {
         //     return Err(MuonError::NotVerified.into());
         // }
 
-        schnorr_verify(
+        let ret: bool = schnorr_verify(
             // [U256Wrap] signer x
             pub_key.x.0,
             // [u8] signer y parity
@@ -226,6 +226,11 @@ impl Processor {
             // [U256Wrap] nonce address
             sign.nonce.0
         )?;
+
+        if !ret{
+            msg!("NotVerified");
+            return Err(MuonError::NotVerified.into());
+        }
 
         msg!("req_id: [{:x}]", req_id);
 

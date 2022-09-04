@@ -35,14 +35,13 @@ export const verifySchnorrSign = function (reqId: Buffer, hash: BN, signature: B
     return Buffer.from(Uint8Array.of(3, ...serialized));
 }
 
-export const sampleAppCall = function (req_id: Buffer, msg: string, signature_s: BN, owner: BN, nonce: BN) {
+export const sampleAppCall = function (req_id: Buffer, msg: string, signature_s: BN, nonce: BN) {
     const serialized = borsh.serialize(SampleAppInstructionSchema, new SampleAppInstruction({
         req_id,
         msg,
         signature_s,
-        owner,
         nonce
     }));
     // return Buffer.from(serialized);
-    return Buffer.from(Uint8Array.of(0, ...serialized));
+    return Buffer.from(Uint8Array.of(3, ...serialized));
 }

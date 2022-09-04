@@ -159,14 +159,21 @@ async function verifyProcess () {
 
     console.log(sign)
 
-    console.log(`finding groupStorageAccount of owner ${sign.owner} ...`);
-    const groupStorageAccount = (await getGroupStorage(sign.owner))[0].pubkey;
-    console.log(`groupStorageAccount: ${groupStorageAccount.toBase58()}`);
+    // console.log(`finding groupStorageAccount of owner ${sign.owner} ...`);
+    // const groupStorageAccount = (await getGroupStorage(sign.owner))[0].pubkey;
+    // console.log(`groupStorageAccount: ${groupStorageAccount.toBase58()}`);
+
+    const GROUP_STORAGE_ACCOUNT_SEED = "group";
+    const groupStoragePubkey = await PublicKey.createWithSeed(
+        getProgramId(),
+        GROUP_STORAGE_ACCOUNT_SEED,
+        getProgramId(),
+    );
 
     console.log(`calling solana sample app to verify muon.test_app signature...`);
     const result = await sampleCall(
         getPayer(),
-        groupStorageAccount,
+        groupStoragePubkey,
         cid.slice(1),
         app_result,
         sign.signature,

@@ -43,6 +43,8 @@ let payer: Keypair;
 let programKeypair: Keypair;
 let programId: PublicKey;
 
+let muonProgramId: PublicKey;
+
 /**
  * Sample program info
  */
@@ -224,6 +226,9 @@ export async function checkProgram(): Promise<void> {
         programKeypair = await createKeypairFromFile(SAMPLE_KEYPAIR_PATH);
         programId = programKeypair.publicKey;
         // schnorrLibKeypair = await createKeypairFromFile(SCHNORR_LIB_KEYPAIR_PATH);
+
+        let muonKeypair = await createKeypairFromFile(PROGRAM_KEYPAIR_PATH);
+        muonProgramId = muonKeypair.publicKey;
     } catch (err) {
         const errMsg = (err as Error).message;
         throw new Error(
@@ -559,14 +564,13 @@ export async function sampleCall(
             // caller user info account
             {pubkey: user.publicKey, isSigner: true, isWritable: false},
             // muon account pubkey
-            {pubkey: programId, isSigner: false, isWritable: false},
+            {pubkey: muonProgramId, isSigner: false, isWritable: false},
         ],
         programId: sampleProgramId,
         data: Instructions.sampleAppCall(
             toBN(req_id).toBuffer('be'),
             msg,
             toBN(signature_s),
-            toBN(owner),
             toBN(nonce)
         )
     });

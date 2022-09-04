@@ -13,8 +13,6 @@ pub struct U256Wrap(pub u256);
 pub struct SchnorrSign {
     // s value of signature
     pub signature: U256Wrap,
-    // ethereum address of signer
-    pub address: U256Wrap,
     // ethereum address of nonce
     pub nonce: U256Wrap
 }

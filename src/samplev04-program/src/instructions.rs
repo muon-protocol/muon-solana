@@ -24,7 +24,6 @@ pub enum Instruction {
         req_id: MuonRequestId,
         msg: String,
         signature_s: U256Wrap,
-        owner: U256Wrap,
         nonce: U256Wrap
     },
 }
