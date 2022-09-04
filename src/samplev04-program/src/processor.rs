@@ -233,10 +233,16 @@ impl Processor {
 
         let admin_storage = next_account_info(accounts_iter)?;
 
+        msg!("Validating admin storage");
+
         Self::validate_admin_storage(program_id, admin_storage)?;
 
         let admin_info = AdminInfo::try_from_slice(&admin_storage.data.borrow())?;
+        msg!("admin_info.admin: {:?}", admin_info.admin);
+
         let admin = next_account_info(accounts_iter)?;
+
+        msg!("admin: {:?}", admin);
 
         Self::is_rent_exempt(next_account_info(accounts_iter)?, group_info_storage)?;
 
@@ -250,10 +256,14 @@ impl Processor {
             return Err(MuonError::MissingAdminSignature.into());
         }
 
+        msg!("load group pubkey");
         let mut group_pub_key = GroupPubKey::try_from_slice(&group_info_storage.data.borrow())?;
+        msg!("group pub key loaded, {:?}", group_pub_key);
 
         group_pub_key.x = pubkey_x;
         group_pub_key.parity = pubkey_y_parity;
+
+        msg!("serializing {:?} {:?}", group_pub_key, group_info_storage);
         group_pub_key.serialize(&mut &mut group_info_storage.data.borrow_mut()[..])?;
 
         msg!("AddGroup Done.");

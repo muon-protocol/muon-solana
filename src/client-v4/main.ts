@@ -44,7 +44,7 @@ async function main() {
         },
         addGroup: async (argv) => {
             await initialize()
-            await addGroupProcess(argv.ethAddress, argv.pubKeyX, argv.pubkeyYParity)
+            await addGroupProcess(argv.pubKeyX, argv.pubkeyYParity)
         },
         listGroup: async () => {
             await initialize()
@@ -98,8 +98,8 @@ async function getAdminProcess() {
     await reportAdminInfo();
 }
 
-async function addGroupProcess(ethAddress: string, pubKeyX: string, pubKeyYParity: string) {
-    await addGroup(ethAddress, pubKeyX, parseInt(pubKeyYParity), getPayer())
+async function addGroupProcess(pubKeyX: string, pubKeyYParity: string) {
+    await addGroup(pubKeyX, parseInt(pubKeyYParity), getPayer())
 }
 
 async function listGroupsProcess() {

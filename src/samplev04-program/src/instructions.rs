@@ -12,8 +12,13 @@ use muonv04::{
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub enum Instruction {
     InitializeAdmin,
-    
+
     TransferAdmin,
+
+    UpdateGroupPubKey {
+        pubkey_x: U256Wrap,
+        pubkey_y_parity: u8,
+    },
 
     Verify {
         req_id: MuonRequestId,
@@ -22,9 +27,4 @@ pub enum Instruction {
         owner: U256Wrap,
         nonce: U256Wrap
     },
-
-    UpdateGroupPubKey {
-        pubkey_x: U256Wrap,
-        pubkey_y_parity: u8,
-    }
 }

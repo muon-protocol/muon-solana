@@ -19,8 +19,8 @@ export const transferAdmin = function () {
     return Buffer.from(Uint8Array.of(1, ...serialized));
 }
 
-export const addGroup = function (eth_address: BN, pubkey_x: BN, pubkey_y_parity: number) {
-    const serialized = borsh.serialize(AddGroupSchema, new AddGroup({eth_address, pubkey_x, pubkey_y_parity}));
+export const addGroup = function (pubkey_x: BN, pubkey_y_parity: number) {
+    const serialized = borsh.serialize(AddGroupSchema, new AddGroup({pubkey_x, pubkey_y_parity}));
     return Buffer.from(Uint8Array.of(2, ...serialized));
 }
 

@@ -27,10 +27,10 @@ export async function handleArgs (handlers: MuonCommandHandlers) {
             {},
             handlers.transferAdmin
         )
-        .command("group-add <ethAddress> <pubKeyX> <pubkeyYParity>",
+        .command("group-add <pubKeyX> <pubkeyYParity>",
             "add new verification group info.",
             {
-                ethAddress: {type: "string"},
+                //ethAddress: {type: "string"},
                 pubKeyX: {type: "string"},
                 pubkeyYParity: {type: "string"},
             },
