@@ -90,12 +90,14 @@ class AdminInfo {
 
 class GroupInfo {
     pubkey_x = new BN('0');
-    pubkey_y_parity = 0
+    pubkey_y_parity = 0;
+    app_id = new BN('0');
 
-    constructor(fields: { pubkey_x: BN, pubkey_y_parity: number } | undefined = undefined) {
+    constructor(fields: { pubkey_x: BN, pubkey_y_parity: number, app_id: BN } | undefined = undefined) {
         if (fields) {
             this.pubkey_x = fields.pubkey_x;
             this.pubkey_y_parity = fields.pubkey_y_parity;
+            this.app_id = fields.app_id;
         }
     }
 }
@@ -110,7 +112,8 @@ const GroupInfoSchema = new Map([
     [GroupInfo, {
         kind: 'struct', fields: [
             ['pubkey_x', 'u256'],
-            ['pubkey_y_parity', 'u8']
+            ['pubkey_y_parity', 'u8'],
+            ['app_id', 'u256']
         ]
     }],
 ]);
@@ -125,7 +128,7 @@ const ADMIN_INFO_SIZE = borsh.serialize(
 
 const GROUP_INFO_SIZE = borsh.serialize(
     GroupInfoSchema,
-    new GroupInfo({pubkey_x: new BN('0'), pubkey_y_parity: 0})
+    new GroupInfo({pubkey_x: new BN('0'), pubkey_y_parity: 0, app_id: new BN('0')})
 ).length
 
 /**
@@ -400,7 +403,8 @@ export async function getMinimumBalanceForRentExemption(numBytes: number): Promi
     );
 }
 
-export async function addGroup(pubKeyX: string, pubKeyYParity: number, admin: Keypair) {
+export async function addGroup(pubKeyX: string, pubKeyYParity: number, appId: string, admin: Keypair) {
+    console.log("appId", appId);
     console.log('adding group ...');
     pubKeyX = pubKeyX.replace('0x', "");
     while (pubKeyX.length < 64)
@@ -491,7 +495,7 @@ export async function addGroup(pubKeyX: string, pubKeyYParity: number, admin: Ke
                     {pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false}
                 ],
                 programId,
-                data: Instructions.addGroup(toBN(pubKeyX), pubKeyYParity)
+                data: Instructions.addGroup(toBN(pubKeyX), pubKeyYParity, toBN(appId))
             })
         // console.log(transaction.serialize());
         const txHash = await sendAndConfirmTransaction(connection, transaction, [admin]);

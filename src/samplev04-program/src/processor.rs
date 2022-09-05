@@ -26,7 +26,7 @@ use crate::{
 };
 use muonv04::{
     instructions::MuonInstruction,
-    types::{U256Wrap, MuonRequestId, GroupPubKey},
+    types::{U256Wrap, MuonRequestId, GroupPubKey, MuonAppInfo},
     errors::MuonError,
     state::{GroupInfo, AdminInfo}
 };
@@ -62,8 +62,9 @@ impl Processor {
             Instruction::TransferAdmin => {
                 Self::process_transfer_admin(program_id, accounts)
             }
-            Instruction::UpdateGroupPubKey { pubkey_x, pubkey_y_parity } => {
-                Self::process_update_group(program_id, accounts, pubkey_x, pubkey_y_parity)
+            Instruction::UpdateGroupPubKey { pubkey_x, pubkey_y_parity, muon_app_id } => {
+                Self::process_update_group(program_id, accounts, pubkey_x,
+                    pubkey_y_parity, muon_app_id)
             }
         }
     }
@@ -90,13 +91,17 @@ impl Processor {
         let muon = next_account_info(accounts_iter)?;
         msg!("muon: {:x?}.", muon.key);
 
-        let msg_hash = Self::hash_parameters(msg);
-        msg!("msg_hash: {:x}.", msg_hash);
-
         msg!("Loading group_info");
         // Increment and store the number of times the account has been greeted
-        let group_info = GroupPubKey::try_from_slice(&group_info_storage.data.borrow())?;
+        let group_info = MuonAppInfo::try_from_slice(&group_info_storage.data.borrow())?;
         msg!("group_info: {:?}.", group_info);
+
+        let msg_hash = Self::hash_parameters(
+            msg,
+            &req_id,
+            &group_info.muon_app_id
+        );
+        msg!("msg_hash: {:x}.", msg_hash);
 
         //let parity: U256Wrap = U256Wrap{0:};
         let ix = MuonInstruction::verify(
@@ -112,8 +117,8 @@ impl Processor {
             nonce.0,
 
             //TODO: FixMe
-            group_info.x.0, // pub_key_x
-            group_info.parity, //pub_key_parity
+            group_info.group_pub_key.x.0, // pub_key_x
+            group_info.group_pub_key.parity, //pub_key_parity
         );
 
         invoke(
@@ -216,6 +221,7 @@ impl Processor {
         accounts: &[AccountInfo],
         pubkey_x: U256Wrap,
         pubkey_y_parity: u8,
+        muon_app_id: U256Wrap
     ) -> ProgramResult {
         msg!("AddGroup x:0x{:x} y_parity: {}", &pubkey_x, pubkey_y_parity);
 
@@ -257,11 +263,14 @@ impl Processor {
         }
 
         msg!("load group pubkey");
-        let mut group_pub_key = GroupPubKey::try_from_slice(&group_info_storage.data.borrow())?;
+
+        //TODO: rename group_pub_key to muon_app_info
+        let mut group_pub_key = MuonAppInfo::try_from_slice(&group_info_storage.data.borrow())?;
         msg!("group pub key loaded, {:?}", group_pub_key);
 
-        group_pub_key.x = pubkey_x;
-        group_pub_key.parity = pubkey_y_parity;
+        group_pub_key.group_pub_key.x = pubkey_x;
+        group_pub_key.group_pub_key.parity = pubkey_y_parity;
+        group_pub_key.muon_app_id = muon_app_id;
 
         msg!("serializing {:?} {:?}", group_pub_key, group_info_storage);
         group_pub_key.serialize(&mut &mut group_info_storage.data.borrow_mut()[..])?;
@@ -271,8 +280,20 @@ impl Processor {
         Ok(())
     }
 
-    fn hash_parameters(msg: String) -> u256 {
+    fn hash_parameters(
+        msg: String, 
+        req_id: &MuonRequestId,
+        muon_app_id: &U256Wrap
+    ) -> u256 {
         let mut hasher = Keccak256::new();
+
+        let mut bytes: [u8; 32] = [0; 32];
+        muon_app_id.0.to_little_endian(&mut bytes);
+
+        hasher.update(&bytes);
+
+        //TODO: convert req_id to 256 bytes
+        hasher.update(&req_id.0);
         hasher.update(msg);
         let result = hasher.finalize();
         u256::from(&result[..])

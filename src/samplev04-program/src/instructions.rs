@@ -6,7 +6,8 @@ use primitive_types::{ U256 as u256};
 use muonv04::{
     types::U256Wrap,
     types::MuonRequestId,
-    types::GroupPubKey
+    types::GroupPubKey,
+    types::MuonAppInfo
 };
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
@@ -18,6 +19,8 @@ pub enum Instruction {
     UpdateGroupPubKey {
         pubkey_x: U256Wrap,
         pubkey_y_parity: u8,
+
+        muon_app_id: U256Wrap
     },
 
     Verify {

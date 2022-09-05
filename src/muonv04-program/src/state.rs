@@ -19,11 +19,6 @@ pub struct GroupInfo {
     pub pubkey_y_parity: u8
 }
 
-pub struct GroupPubKey {
-    pub pubkey_x: U256Wrap,
-    pub pubkey_y_parity: u8
-}
-
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
 //#[derive(Serialize, Deserialize, Debug)]
 pub struct AdminInfo {

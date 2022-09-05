@@ -63,7 +63,7 @@ impl MuonInstruction {
         // Address of account that stores signer data.
         group_info_storage: Pubkey,
         // muon request ID.
-        req_id: &[u8; 36],
+        req_id: &[u8; 32],
         // message hash
         hash: u256,
         // s part of signature

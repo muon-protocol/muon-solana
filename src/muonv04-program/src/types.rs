@@ -26,6 +26,12 @@ pub struct GroupPubKey {
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
+pub struct MuonAppInfo {
+    pub group_pub_key: GroupPubKey,
+    pub muon_app_id: U256Wrap
+}
+
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
 pub struct SchnorrVerifyInstruction {
     pub signing_pubkey_x: U256Wrap,
     pub signing_pubkey_y_parity: u8,
@@ -35,7 +41,7 @@ pub struct SchnorrVerifyInstruction {
 }
 
 //TODO: convert to u256
-pub struct MuonRequestId (pub [u8; 36]);
+pub struct MuonRequestId (pub [u8; 32]);
 
 impl fmt::LowerHex for MuonRequestId {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -63,8 +69,8 @@ impl BorshDeserialize for MuonRequestId {
                 "Unexpected length of input",
             ));
         }
-        let res: [u8; 36] = buf[0..36].try_into().expect("slice with incorrect length");
-        *buf = &buf[36..];
+        let res: [u8; 32] = buf[0..32].try_into().expect("slice with incorrect length");
+        *buf = &buf[32..];
         Ok(MuonRequestId(res))
     }
 }
