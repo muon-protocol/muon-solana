@@ -560,6 +560,8 @@ export async function sampleCall(
     owner: string,
     nonce: string
 ) {
+    console.log("req_id", req_id);
+    
     const sampleProgramId = sampleKeypair.publicKey;
     const instruction = new TransactionInstruction({
         keys: [

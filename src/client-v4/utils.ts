@@ -85,7 +85,7 @@ type MuonResponse = {
   result: any
 }
 
-const MUON_TESTNET_URL = 'https://testnet.muon.net/v1/?app=tss&method=test'
+const MUON_TESTNET_URL = 'https://node1.muon.net/v1/?app=tss&method=test'
 
 export async function callMuon(
     req: MuonRequest,

@@ -7,7 +7,7 @@ export class SampleAppInstruction {
     nonce = new BN('0');
 
     constructor(fields: { req_id: Buffer, msg: string, signature_s: BN, nonce: BN  } | undefined = undefined) {
-        if(fields?.req_id.length != 36)
+        if(fields?.req_id.length != 32)
             throw {message: `Unknown signature request_id length of ${fields?.req_id.length}`}
         if (fields) {
             this.req_id = fields.req_id;
@@ -22,7 +22,7 @@ export const schema = new Map([
     [SampleAppInstruction, {
         kind: 'struct',
         fields: [
-            ['req_id', [36]],
+            ['req_id', [32]],
             ['msg', 'string'],
             ['signature_s', 'u256'],
             ['nonce', 'u256']

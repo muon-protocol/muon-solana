@@ -147,7 +147,7 @@ async function verifyProcess () {
         success,
         result: {
             confirmed,
-            cid,
+            hash,
             data: {
                 result: app_result,
                 init: {nonceAddress}
@@ -176,7 +176,7 @@ async function verifyProcess () {
     const result = await sampleCall(
         getPayer(),
         groupStoragePubkey,
-        cid.slice(1),
+        hash,
         app_result,
         sign.signature,
         sign.owner,

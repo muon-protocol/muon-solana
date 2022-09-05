@@ -11,13 +11,14 @@ no-entrypoint = []
 [dependencies]
 muonv04 = { path = "../muonv04-program", features=["no-entrypoint"] }
 thiserror = "1.0.30"
-solana-program = "=1.7.9"
+solana-program = "=1.11.10"
 primitive-types = "0.10.1"
 borsh = "0.9.1"
 borsh-derive = "0.9.1"
 getrandom = { version = "0.2.2", features = ["custom"] }
 sha3 = "0.9.1"
-
+#solana-program-runtime = "1.11.10"
+#solana-runtime = "1.11.10"
 
 [lib]
 name = "muonv04_sample_program"
