@@ -228,13 +228,15 @@ impl Processor {
             sign.nonce.0
         )?;
 
-        if !ret{
+        msg!("ret: {}", ret);
+
+        if(!ret){
             msg!("NotVerified");
             return Err(MuonError::NotVerified.into());
         }
 
-        msg!("ret: {:?}", ret);
-        msg!("req_id: [{:x}]", req_id);
+        
+        // msg!("req_id: [{:x}]", req_id);
 
         //TODO: emit an event.
         // maybe using https://docs.rs/anchor-lang/latest/anchor_lang/macro.emit.html

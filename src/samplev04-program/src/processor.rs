@@ -94,14 +94,13 @@ impl Processor {
         // msg!("Loading group_info");
         // Increment and store the number of times the account has been greeted
         let group_info = MuonAppInfo::try_from_slice(&group_info_storage.data.borrow())?;
-        // msg!("group_info: {:?}.", group_info);
 
         let msg_hash = Self::hash_parameters(
             msg,
             &req_id,
             &group_info.muon_app_id
         );
-        msg!("msg_hash: {:x}.", msg_hash);
+        // msg!("msg_hash: {:x}.", msg_hash);
 
         //let parity: U256Wrap = U256Wrap{0:};
         let ix = MuonInstruction::verify(
@@ -288,14 +287,19 @@ impl Processor {
         let mut hasher = Keccak256::new();
 
         let mut bytes: [u8; 32] = [0; 32];
-        muon_app_id.0.to_little_endian(&mut bytes);
+        muon_app_id.0.to_big_endian(&mut bytes);
 
+        // msg!("1 {:?}", bytes);
         hasher.update(&bytes);
 
         //TODO: convert req_id to 256 bytes
+        // msg!("2 {:?}", req_id.0);
         hasher.update(&req_id.0);
+
+        // msg!("3 {:?}", msg);
         hasher.update(msg);
         let result = hasher.finalize();
+        // msg!("res: {:?}", result);
         u256::from(&result[..])
     }
 

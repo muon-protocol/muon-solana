@@ -154,6 +154,8 @@ pub fn schnorr_verify(
 
     let e_2 = make_msg_challenge(nonce_address, msg_hash).unwrap();
 
+    // msg!("e_2, e {:?} {:?}", e_2, e);
+    
     Ok(e_2 == e)
 }
 
