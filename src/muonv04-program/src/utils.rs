@@ -12,7 +12,8 @@ use sha3::{Digest, Keccak256};
 use solana_program::{
     secp256k1_recover::{
         secp256k1_recover
-    }
+    },
+    msg
 };
 
 use crate::{
@@ -129,7 +130,9 @@ pub fn schnorr_verify(
         return Err(MuonError::ZeroSignatureData)
     }
 
+    // msg!("make_msg_challenge::start");
     let e = make_msg_challenge(nonce_address, msg_hash).unwrap();
+    // msg!("make_msg_challenge::end");
 
     let args_z: u256 = mod_mul(mod_neg(signing_pubkey_x, q), signature_s, q);
 
@@ -145,6 +148,7 @@ pub fn schnorr_verify(
     let mut rs: [u8; 64] = [0; 64];
     args_rs.to_big_endian(&mut rs);
 
+    // msg!("secp256k1_recover::start");
     let result = secp256k1_recover(&zb, args_v, &rs);
     let nonce_address = pub_to_eth_address(&(result.unwrap().0));
 

@@ -41,11 +41,11 @@ impl Processor {
         accounts: &[AccountInfo],
         instruction_data: &[u8],
     ) -> ProgramResult {
-        msg!("sample program start.");
+        // msg!("sample program start.");
 
-        msg!("instruction_data {:?} {}", instruction_data,
-            instruction_data.len()
-        );
+        // msg!("instruction_data {:?} {}", instruction_data,
+            // instruction_data.len()
+        // );
 
 //        let instruction = VerifyInstruction::unpack(instruction_data)?;
 
@@ -89,12 +89,12 @@ impl Processor {
 //        msg!("caller: {:x?}.", caller.key);
 
         let muon = next_account_info(accounts_iter)?;
-        msg!("muon: {:x?}.", muon.key);
+        // msg!("muon: {:x?}.", muon.key);
 
-        msg!("Loading group_info");
+        // msg!("Loading group_info");
         // Increment and store the number of times the account has been greeted
         let group_info = MuonAppInfo::try_from_slice(&group_info_storage.data.borrow())?;
-        msg!("group_info: {:?}.", group_info);
+        // msg!("group_info: {:?}.", group_info);
 
         let msg_hash = Self::hash_parameters(
             msg,

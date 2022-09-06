@@ -23,6 +23,7 @@ impl Processor {
         accounts: &[AccountInfo],
         instruction_data: &[u8],
     ) -> ProgramResult {
+        msg!("MuonV04: Processor");
         let instruction = MuonInstruction::try_from_slice(instruction_data)
             .map_err(|_| ProgramError::InvalidInstructionData)?;
 
@@ -232,6 +233,7 @@ impl Processor {
             return Err(MuonError::NotVerified.into());
         }
 
+        msg!("ret: {:?}", ret);
         msg!("req_id: [{:x}]", req_id);
 
         //TODO: emit an event.
