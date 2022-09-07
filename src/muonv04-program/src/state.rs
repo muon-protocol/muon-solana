@@ -6,12 +6,9 @@ use crate::{
     types::U256Wrap
 };
 
-//const Q: u256 = u256::from("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141");
-//const HALF_Q: u256 = (Q >> 1) + 1;
 
 /// Define the type of state stored in accounts
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
-//#[derive(Serialize, Deserialize, Debug)]
 pub struct GroupInfo {
     pub is_valid: bool,
     pub eth_address: U256Wrap,
@@ -20,7 +17,6 @@ pub struct GroupInfo {
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
-//#[derive(Serialize, Deserialize, Debug)]
 pub struct AdminInfo {
     pub admin: Pubkey,
     pub last: u32

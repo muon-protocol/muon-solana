@@ -15,7 +15,6 @@ use crate::{
 };
 
 #[derive(BorshSerialize, BorshDeserialize, Debug)]
-//#[derive(Serialize, Deserialize, Debug)]
 pub enum MuonInstruction {
     /// Accounts expected
     ///
@@ -33,19 +32,6 @@ pub enum MuonInstruction {
 
     /// Accounts expected
     ///
-    /// 0. `[writable]` group info storage account
-    /// 1. `[]` admin info storage account
-    /// 2. `[]` admin account
-    /// 3. `[]` the rent sysvar
-    
-    // AddGroup {
-    //     eth_address: U256Wrap,
-    //     pubkey_x: U256Wrap,
-    //     pubkey_y_parity: u8,
-    // },
-
-    /// Accounts expected
-    ///
     /// 0. `[]` group info storage account
     VerifySignature {
         req_id: MuonRequestId,
@@ -53,8 +39,6 @@ pub enum MuonInstruction {
         sign: SchnorrSign,
         pub_key: GroupPubKey
     },
-    // TODO
-    // RemoveGroup{eth_address: u256}
 }
 
 impl MuonInstruction {
@@ -68,9 +52,11 @@ impl MuonInstruction {
         hash: u256,
         // s part of signature
         signature_s: u256,
-        // ethereum address of signature nonce.
+        // signature nonce.
         nonce: u256,
+        // TSS public key
         pub_key_x: u256,
+        // TSS parity
         pub_key_parity: u8
     ) -> Instruction {
         Instruction::new_with_borsh(

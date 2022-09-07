@@ -16,7 +16,7 @@ pub enum MuonError {
     InvalidAdminAccount,
     #[error("Not Rent Exempt")]
     NotRentExempt,
-    #[error("admin Restricted")]
+    #[error("Admin Restricted")]
     AdminRestricted,
     #[error("Missing Admin Signature")]
     MissingAdminSignature,
@@ -26,7 +26,7 @@ pub enum MuonError {
     LargePubkeyX,
     #[error("No Zero Inputs Allowed")]
     ZeroSignatureData,
-    #[error("Not Verified")]
+    #[error("TSS Not Verified")]
     NotVerified,
 }
 

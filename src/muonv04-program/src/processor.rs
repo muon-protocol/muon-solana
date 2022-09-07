@@ -23,7 +23,7 @@ impl Processor {
         accounts: &[AccountInfo],
         instruction_data: &[u8],
     ) -> ProgramResult {
-        msg!("MuonV04: Processor");
+        // msg!("MuonV04: Processor");
         let instruction = MuonInstruction::try_from_slice(instruction_data)
             .map_err(|_| ProgramError::InvalidInstructionData)?;
 
@@ -34,9 +34,6 @@ impl Processor {
             MuonInstruction::TransferAdmin => {
                 Self::process_transfer_admin(program_id, accounts)
             }
-            // MuonInstruction::AddGroup { eth_address, pubkey_x, pubkey_y_parity } => {
-            //     Self::process_add_group(program_id, accounts, eth_address, pubkey_x, pubkey_y_parity)
-            // }
             MuonInstruction::VerifySignature { req_id, hash, sign, pub_key} => {
                 Self::process_verify_sign(program_id, accounts, req_id, hash, sign, pub_key)
             }
@@ -47,8 +44,6 @@ impl Processor {
         program_id: &Pubkey,
         accounts: &[AccountInfo],
     ) -> ProgramResult {
-        msg!("InitializeAdmin start");
-
         // TODO: is need to program KeyPair sign this transaction?
 
         // Iterating accounts is safer then indexing
@@ -59,9 +54,7 @@ impl Processor {
 
         Self::validate_admin_storage(program_id, admin_info_storage)?;
 
-        // Increment and store the number of times the account has been greeted
         let mut admin_info = AdminInfo::try_from_slice(&admin_info_storage.data.borrow())?;
-//    msg!("TransferAdmin from {} to {}...", admin_info.admin, admin);
 
         let admin = next_account_info(accounts_iter)?;
 
@@ -84,8 +77,6 @@ impl Processor {
         program_id: &Pubkey,
         accounts: &[AccountInfo],
     ) -> ProgramResult {
-        msg!("TransferAdmin start");
-
         // Iterating accounts is safer then indexing
         let accounts_iter = &mut accounts.iter();
 
@@ -94,11 +85,8 @@ impl Processor {
 
         Self::validate_admin_storage(program_id, admin_info_storage)?;
 
-        // Increment and store the number of times the account has been greeted
         let mut admin_info = AdminInfo::try_from_slice(&admin_info_storage.data.borrow())?;
-//    msg!("TransferAdmin from {} to {}...", admin_info.admin, admin);
 
-        // The account must be owned by the program in order to modify its data
         if !admin_info.is_initialized() {
             msg!("AdminInfo account does not have the correct program id");
             return Err(MuonError::InvalidAdminStorage.into());
@@ -108,12 +96,12 @@ impl Processor {
         let new_admin = next_account_info(accounts_iter)?;
 
         if admin_info.admin != *old_admin.key {
-            msg!("old admin mismatched.");
+            msg!("Old admin mismatch.");
             return Err(ProgramError::InvalidAccountData);
         }
 
         if !old_admin.is_signer {
-            msg!("old admin is not signer.");
+            msg!("Old admin is not signer.");
             return Err(ProgramError::MissingRequiredSignature);
         }
 
@@ -125,59 +113,6 @@ impl Processor {
 
         Ok(())
     }
-
-    // pub fn process_add_group(
-    //     program_id: &Pubkey,
-    //     accounts: &[AccountInfo],
-    //     eth_address: U256Wrap,
-    //     pubkey_x: U256Wrap,
-    //     pubkey_y_parity: u8,
-    // ) -> ProgramResult {
-    //     msg!("AddGroup x:0x{:x} y_parity: {}", &pubkey_x, pubkey_y_parity);
-
-    //     // Iterating accounts is safer then indexing
-    //     let accounts_iter = &mut accounts.iter();
-
-    //     // Get the account to store admin info
-    //     let group_info_storage = next_account_info(accounts_iter)?;
-
-    //     // The account must be owned by the program in order to modify its data
-    //     if group_info_storage.owner != program_id {
-    //         msg!("GroupInfo account does not have the correct program id");
-    //         return Err(MuonError::InvalidGroupAccountOwner.into());
-    //     }
-
-    //     let admin_storage = next_account_info(accounts_iter)?;
-
-    //     Self::validate_admin_storage(program_id, admin_storage)?;
-
-    //     let admin_info = AdminInfo::try_from_slice(&admin_storage.data.borrow())?;
-    //     let admin = next_account_info(accounts_iter)?;
-
-    //     Self::is_rent_exempt(next_account_info(accounts_iter)?, group_info_storage)?;
-
-    //     if admin_info.admin != *admin.key {
-    //         msg!("Admin restricted.");
-    //         return Err(MuonError::AdminRestricted.into());
-    //     }
-
-    //     if !admin.is_signer {
-    //         msg!("admin is not signer.");
-    //         return Err(MuonError::MissingAdminSignature.into());
-    //     }
-
-    //     let mut group_info = GroupInfo::try_from_slice(&group_info_storage.data.borrow())?;
-
-    //     group_info.is_valid = true;
-    //     group_info.eth_address = eth_address;
-    //     group_info.pubkey_x = pubkey_x;
-    //     group_info.pubkey_y_parity = pubkey_y_parity;
-    //     group_info.serialize(&mut &mut group_info_storage.data.borrow_mut()[..])?;
-
-    //     msg!("AddGroup Done.");
-
-    //     Ok(())
-    // }
 
     pub fn process_verify_sign(
         program_id: &Pubkey,
@@ -192,29 +127,6 @@ impl Processor {
 
         //TODO: should we check account and program_id?
 
-        //let accounts_iter = &mut accounts.iter();
-
-        // Get the account to store admin info
-        // let group_info_storage = next_account_info(accounts_iter)?;
-
-        // let group_info = GroupInfo::try_from_slice(&group_info_storage.data.borrow())?;
-
-        // The account must be owned by the program in order to modify its data
-        // if group_info_storage.owner != program_id || !group_info.is_initialized() {
-        //     msg!("GroupInfo account does not have the correct program id");
-        //     return Err(MuonError::InvalidGroupAccountOwner.into());
-        // }
-
-        // if !group_info.is_valid {
-        //     msg!("group_info is not valid");
-        //     return Err(MuonError::NotVerified.into());
-        // }
-
-        // if group_info.eth_address != sign.address {
-        //     msg!("sign.address not matched with group_info.eth_address");
-        //     return Err(MuonError::NotVerified.into());
-        // }
-
         let ret: bool = schnorr_verify(
             // [U256Wrap] signer x
             pub_key.x.0,
@@ -228,15 +140,12 @@ impl Processor {
             sign.nonce.0
         )?;
 
-        msg!("ret: {}", ret);
-
-        if(!ret){
-            msg!("NotVerified");
+        if !ret{
+            msg!("TSS Not Verified");
             return Err(MuonError::NotVerified.into());
         }
 
-        
-        // msg!("req_id: [{:x}]", req_id);
+        msg!("req_id: [{:x}]", req_id);
 
         //TODO: emit an event.
         // maybe using https://docs.rs/anchor-lang/latest/anchor_lang/macro.emit.html

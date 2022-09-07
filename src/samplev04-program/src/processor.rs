@@ -5,49 +5,36 @@ use solana_program::{
     msg,
     program_error::ProgramError,
     pubkey::{
-        Pubkey,
-        ParsePubkeyError
+        Pubkey
     },
-//    instruction::{
-//        Instruction,
-//        AccountMeta
-//    },
+
     program::{
         invoke
     },
     sysvar::{rent::Rent, Sysvar},
 };
 use sha3::{Digest, Keccak256};
-use primitive_types::{ U256 as u256, U512 as u512 };
+use primitive_types::{ U256 as u256};
 
 use crate::{
-    instructions::Instruction,
-    errors::SchnorrLibError
+    instructions::Instruction
 };
 use muonv04::{
     instructions::MuonInstruction,
-    types::{U256Wrap, MuonRequestId, GroupPubKey, MuonAppInfo},
+    types::{U256Wrap, MuonRequestId, MuonAppInfo},
     errors::MuonError,
-    state::{GroupInfo, AdminInfo}
+    state::{AdminInfo}
 };
 
 
 pub struct Processor;
 
 impl Processor {
-    //TODO: save group public key
     pub fn process(
         program_id: &Pubkey,
         accounts: &[AccountInfo],
         instruction_data: &[u8],
     ) -> ProgramResult {
-        // msg!("sample program start.");
-
-        // msg!("instruction_data {:?} {}", instruction_data,
-            // instruction_data.len()
-        // );
-
-//        let instruction = VerifyInstruction::unpack(instruction_data)?;
 
         let instruction = Instruction::try_from_slice(instruction_data)
             .map_err(|e| ProgramError::InvalidInstructionData)?;
@@ -77,22 +64,16 @@ impl Processor {
         signature_s: U256Wrap,
         nonce: U256Wrap,
     ) -> ProgramResult {
-        msg!("start to verify");
         // Iterating accounts is safer then indexing
         let accounts_iter = &mut accounts.iter();
 
-        // Get the account to store admin info
         let group_info_storage = next_account_info(accounts_iter)?;
-//        msg!("group_info: {:x?}.", group_info_storage.key);
 
         let caller = next_account_info(accounts_iter)?;
-//        msg!("caller: {:x?}.", caller.key);
 
+        // TODO: validate Muon
         let muon = next_account_info(accounts_iter)?;
-        // msg!("muon: {:x?}.", muon.key);
 
-        // msg!("Loading group_info");
-        // Increment and store the number of times the account has been greeted
         let group_info = MuonAppInfo::try_from_slice(&group_info_storage.data.borrow())?;
 
         let msg_hash = Self::hash_parameters(
@@ -100,11 +81,9 @@ impl Processor {
             &req_id,
             &group_info.muon_app_id
         );
-        // msg!("msg_hash: {:x}.", msg_hash);
 
-        //let parity: U256Wrap = U256Wrap{0:};
         let ix = MuonInstruction::verify(
-            // Address of account that stores signer data.
+            // Address of account that stores group info
             *group_info_storage.key,
             // muon request ID.
             &req_id.0,
@@ -112,14 +91,15 @@ impl Processor {
             msg_hash,
             // s part of signature
             signature_s.0,
-            // ethereum address of signature nonce.
+            // nonce
             nonce.0,
-
-            //TODO: FixMe
-            group_info.group_pub_key.x.0, // pub_key_x
-            group_info.group_pub_key.parity, //pub_key_parity
+            // pub_key_x
+            group_info.group_pub_key.x.0, 
+            //pub_key_parity
+            group_info.group_pub_key.parity,
         );
 
+        // panics when the signature is not valid
         invoke(
             &ix,
             &[
@@ -136,9 +116,8 @@ impl Processor {
         program_id: &Pubkey,
         accounts: &[AccountInfo],
     ) -> ProgramResult {
-        msg!("InitializeAdmin start");
 
-        // TODO: is need to program KeyPair sign this transaction?
+        // TODO: should we verify the signer?
 
         // Iterating accounts is safer then indexing
         let accounts_iter = &mut accounts.iter();
@@ -150,14 +129,13 @@ impl Processor {
 
         // Increment and store the number of times the account has been greeted
         let mut admin_info = AdminInfo::try_from_slice(&admin_info_storage.data.borrow())?;
-        //    msg!("TransferAdmin from {} to {}...", admin_info.admin, admin);
 
         let admin = next_account_info(accounts_iter)?;
 
         Self::is_rent_exempt(next_account_info(accounts_iter)?, admin_info_storage)?;
 
         if admin_info.is_initialized() {
-            msg!("already initialized.");
+            msg!("Already initialized.");
             return Err(MuonError::AdminAlreadyInitialized.into());
         }
 
@@ -173,8 +151,6 @@ impl Processor {
         program_id: &Pubkey,
         accounts: &[AccountInfo],
     ) -> ProgramResult {
-        msg!("TransferAdmin start");
-
         // Iterating accounts is safer then indexing
         let accounts_iter = &mut accounts.iter();
 
@@ -183,9 +159,7 @@ impl Processor {
 
         Self::validate_admin_storage(program_id, admin_info_storage)?;
 
-        // Increment and store the number of times the account has been greeted
         let mut admin_info = AdminInfo::try_from_slice(&admin_info_storage.data.borrow())?;
-        //    msg!("TransferAdmin from {} to {}...", admin_info.admin, admin);
 
         // The account must be owned by the program in order to modify its data
         if !admin_info.is_initialized() {
@@ -238,16 +212,11 @@ impl Processor {
 
         let admin_storage = next_account_info(accounts_iter)?;
 
-        msg!("Validating admin storage");
-
         Self::validate_admin_storage(program_id, admin_storage)?;
 
         let admin_info = AdminInfo::try_from_slice(&admin_storage.data.borrow())?;
-        msg!("admin_info.admin: {:?}", admin_info.admin);
 
         let admin = next_account_info(accounts_iter)?;
-
-        msg!("admin: {:?}", admin);
 
         Self::is_rent_exempt(next_account_info(accounts_iter)?, group_info_storage)?;
 
@@ -257,21 +226,17 @@ impl Processor {
         }
 
         if !admin.is_signer {
-            msg!("admin is not signer.");
+            msg!("Admin is not signer.");
             return Err(MuonError::MissingAdminSignature.into());
         }
 
-        msg!("load group pubkey");
-
         //TODO: rename group_pub_key to muon_app_info
         let mut group_pub_key = MuonAppInfo::try_from_slice(&group_info_storage.data.borrow())?;
-        msg!("group pub key loaded, {:?}", group_pub_key);
 
         group_pub_key.group_pub_key.x = pubkey_x;
         group_pub_key.group_pub_key.parity = pubkey_y_parity;
         group_pub_key.muon_app_id = muon_app_id;
 
-        msg!("serializing {:?} {:?}", group_pub_key, group_info_storage);
         group_pub_key.serialize(&mut &mut group_info_storage.data.borrow_mut()[..])?;
 
         msg!("AddGroup Done.");
@@ -289,17 +254,13 @@ impl Processor {
         let mut bytes: [u8; 32] = [0; 32];
         muon_app_id.0.to_big_endian(&mut bytes);
 
-        // msg!("1 {:?}", bytes);
         hasher.update(&bytes);
 
-        //TODO: convert req_id to 256 bytes
-        // msg!("2 {:?}", req_id.0);
         hasher.update(&req_id.0);
 
-        // msg!("3 {:?}", msg);
         hasher.update(msg);
         let result = hasher.finalize();
-        // msg!("res: {:?}", result);
+
         u256::from(&result[..])
     }
 

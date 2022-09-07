@@ -40,7 +40,6 @@ pub struct SchnorrVerifyInstruction {
     pub nonce_address: U256Wrap
 }
 
-//TODO: convert to u256
 pub struct MuonRequestId (pub [u8; 32]);
 
 impl fmt::LowerHex for MuonRequestId {
@@ -89,10 +88,6 @@ impl BorshSerialize for U256Wrap {
         writer.write_all(&bytes)
     }
 }
-
-//fn pop(barry: &[u8]) -> &[u8; 32] {
-//    barry.try_into().expect("slice with incorrect length")
-//}
 
 impl BorshDeserialize for U256Wrap {
     #[inline]
