@@ -17,7 +17,7 @@ import {
     addGroup,
     reportAdminInfo,
     sampleCall,
-} from './muon-v02';
+} from './muon-v04';
 
 import {callMuon} from './utils'
 import {Keypair, PublicKey} from "@solana/web3.js";
@@ -159,11 +159,6 @@ async function verifyProcess () {
     if(!success || !confirmed)
         throw "Muon request failed";
 
-    console.log(sign)
-
-    // console.log(`finding groupStorageAccount of owner ${sign.owner} ...`);
-    // const groupStorageAccount = (await getGroupStorage(sign.owner))[0].pubkey;
-    // console.log(`groupStorageAccount: ${groupStorageAccount.toBase58()}`);
 
     const GROUP_STORAGE_ACCOUNT_SEED = "group";
     const groupStoragePubkey = await PublicKey.createWithSeed(

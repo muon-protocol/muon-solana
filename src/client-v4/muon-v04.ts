@@ -203,19 +203,7 @@ async function addStorageAccount(
                     space: size,
                     programId,
                 }),
-            )
-            // .add({
-            //     keys: [
-            //         // admin info storage account
-            //         {pubkey: pub_key, isSigner: false, isWritable: true},
-            //         // admin account
-            //         {pubkey: payer.publicKey, isSigner: false, isWritable: false},
-            //         // the rent sysvar
-            //         {pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false}
-            //     ],
-            //     programId,
-            //     data: Instructions.initializeAdmin()
-            // })
+            );
         return sendAndConfirmTransaction(connection, transaction, [payer, sampleKeypair]);
     }
 }
@@ -282,53 +270,6 @@ export async function checkProgram(): Promise<void> {
 
     console.log("GROUP_INFO_SIZE", GROUP_INFO_SIZE);
     await addStorageAccount(groupStoragePubkey, GROUP_STORAGE_ACCOUNT_SEED, GROUP_INFO_SIZE);
-
-    // const adminInfo = await connection.getAccountInfo(adminStoragePubkey);
-    // if (adminInfo === null) {
-    //     console.log(
-    //         'Creating account',
-    //         adminStoragePubkey.toBase58(),
-    //         'to store admin info',
-    //     );
-    //     const lamports = await connection.getMinimumBalanceForRentExemption(
-    //         ADMIN_INFO_SIZE,
-    //     );
-    //     console.log(programId.toBase58(), 
-    //         "programId", Instructions.initializeAdmin(),
-    //         payer.publicKey.toBase58()
-    //         );
-    //     const transaction = new Transaction()
-    //         .add(
-    //             SystemProgram.createAccountWithSeed({
-    //                 fromPubkey: payer.publicKey,
-    //                 basePubkey: programId,
-    //                 seed: ADMIN_STORAGE_SEED,
-    //                 newAccountPubkey: adminStoragePubkey,
-    //                 lamports,
-    //                 space: ADMIN_INFO_SIZE,
-    //                 programId,
-    //             }),
-    //         )
-    //         .add({
-    //             keys: [
-    //                 // admin info storage account
-    //                 {pubkey: adminStoragePubkey, isSigner: false, isWritable: true},
-    //                 // admin account
-    //                 {pubkey: payer.publicKey, isSigner: false, isWritable: false},
-    //                 // the rent sysvar
-    //                 {pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false}
-    //             ],
-    //             programId,
-    //             data: Instructions.initializeAdmin()
-    //         })
-    //     const txHash = await sendAndConfirmTransaction(connection, transaction, [payer, sampleKeypair]);
-        // let txHash = await addStorageAccount(
-        //     adminStoragePubkey, ADMIN_STORAGE_SEED, ADMIN_INFO_SIZE);
-
-        // console.log('storage creation tx: ', txHash);
-    // } else {
-    //     console.log(`Storage account already exist.`);
-    // }
 }
 
 export function getProgramId(): PublicKey {
@@ -409,79 +350,6 @@ export async function addGroup(pubKeyX: string, pubKeyYParity: number, appId: st
     pubKeyX = pubKeyX.replace('0x', "");
     while (pubKeyX.length < 64)
         pubKeyX = `0${pubKeyX}`;
-    
-    // const strPubKey = `${pubKeyYParity == 1 ? "03" : "02"}${pubKeyX}`;
-    // const _addr: string = publicKeyToAddress(strPubKey, 'hex');
-    // if (address.toLowerCase() != _addr.toLowerCase())
-    //     throw {message: "group data is incorrect."}
-
-    // const GROUP_STORAGE_ACCOUNT_SEED = createGroupAccountSeed(admin.publicKey, address);
-
-    // Derive the address (public key) of a group storage account from the program so that it's easy to find later.
-    // const GROUP_STORAGE_ACCOUNT_SEED = "group";
-    // const groupStoragePubkey = await PublicKey.createWithSeed(
-    //     programId,
-    //     GROUP_STORAGE_ACCOUNT_SEED,
-    //     programId,
-    // );
-
-    // const groupInfo = await connection.getAccountInfo(groupStoragePubkey);
-    // if (groupInfo === null) {
-    //     console.log('Creating group storage account', groupStoragePubkey.toBase58());
-    //     const lamports = await connection.getMinimumBalanceForRentExemption(
-    //         GROUP_INFO_SIZE,
-    //     );
-
-    //     const transaction = new Transaction()
-    //         .add(
-    //             SystemProgram.createAccountWithSeed({
-    //                 /** The account that will transfer lamports to the created account */
-    //                 fromPubkey: admin.publicKey,
-    //                 /** Base public key to use to derive the address of the created account. Must be the same as the base key used to create `newAccountPubkey` */
-    //                 basePubkey: admin.publicKey,
-    //                 /** Seed to use to derive the address of the created account. Must be the same as the seed used to create `newAccountPubkey` */
-    //                 seed: GROUP_STORAGE_ACCOUNT_SEED,
-    //                 /** Public key of the created account. Must be pre-calculated with PublicKey.createWithSeed() */
-    //                 newAccountPubkey: groupStoragePubkey,
-    //                 /** Amount of lamports to transfer to the created account */
-    //                 lamports,
-    //                 /** Amount of space in bytes to allocate to the created account */
-    //                 space: GROUP_INFO_SIZE,
-    //                 /** Public key of the program to assign as the owner of the created account */
-    //                 programId
-    //             })
-    //         )
-    //         .add({
-    //             keys: [
-    //                 // group info storage account
-    //                 {pubkey: groupStoragePubkey, isSigner: false, isWritable: true},
-    //                 // admin info storage account
-    //                 {pubkey: adminStoragePubkey, isSigner: false, isWritable: false},
-    //                 // admin account
-    //                 {pubkey: admin.publicKey, isSigner: true, isWritable: false},
-    //                 // the rent sysvar
-    //                 {pubkey: SYSVAR_RENT_PUBKEY, isSigner: false, isWritable: false}
-    //             ],
-    //             programId,
-    //             data: Instructions.addGroup(toBN(address), toBN(pubKeyX), pubKeyYParity)
-    //         })
-    //     // console.log(transaction.serialize());
-    //     const txHash = await sendAndConfirmTransaction(connection, transaction, [admin]);
-    //     console.log('group storage creation tx: ', txHash);
-    // } else {
-        // console.log(`group ${_addr} already exist at account ${groupStoragePubkey.toBase58()}`)
-
-        console.log([
-                    // admin info storage account
-                    {pubkey: groupStoragePubkey.toBase58(), isSigner: false, isWritable: true},
-                    // admin info storage account
-                    {pubkey: adminStoragePubkey.toBase58(), isSigner: false, isWritable: false},
-                    // admin account
-                    {pubkey: admin.publicKey.toBase58(), isSigner: true, isWritable: false},
-                    // the rent sysvar
-                    {pubkey: SYSVAR_RENT_PUBKEY.toBase58(), isSigner: false, isWritable: false}
-        ])
-
         const transaction = new Transaction()
             .add({
                 keys: [
