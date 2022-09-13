@@ -16,22 +16,22 @@ pub mod muon {
 
     pub fn verify(
     	ctx: Context<Initialize>,
-        req_id: MuonRequestId,
+        reqId: MuonRequestId,
         hash: U256Wrap,
         sign: SchnorrSign,
-        pub_key: GroupPubKey
+        pubKey: GroupPubKey
     ) -> Result<()> {
         let ret: bool = schnorr_verify(
             // [U256Wrap] signer x
-            pub_key.x.0,
+            pubKey.x.val,
             // [u8] signer y parity
-            pub_key.parity,
+            pubKey.parity,
             // [U256Wrap] signature s
-            sign.signature.0,
+            sign.signature.val,
             // [U256Wrap] msg hash
-            hash.0,
+            hash.val,
             // [U256Wrap] nonce address
-            sign.nonce.0
+            sign.nonce.val
         )?;
 
         // if !ret{
