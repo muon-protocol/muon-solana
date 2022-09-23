@@ -8,6 +8,8 @@ use solana_program::{
     }
 };
 
+use solana_program::msg;
+
 use crate::{
     errors::MuonError
 };
@@ -75,6 +77,8 @@ pub fn schnorr_verify(
     let nonce_address = pub_to_eth_address(&(result.unwrap().0));
 
     let e_2 = make_msg_challenge(nonce_address, msg_hash).unwrap();
+
+    msg!("{:x} {:x} e,e_2", e, e_2);
 
     Ok(e_2 == e)
 }

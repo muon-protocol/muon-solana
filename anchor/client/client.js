@@ -12,7 +12,6 @@ const contractAddress = "0xe4f8d9a30936a6f8b17a73dc6feb51a3bbabd51a";
 
 var addr0 = "0x0000000000000000000000000000000000000000";
 
-console.log(ABI);
 
 var muonContractEvm = new web3.eth.Contract(ABI, contractAddress);
 
@@ -48,8 +47,6 @@ anchor.setProvider(anchor.AnchorProvider.env());
 const program = new anchor.Program(idl, programId);
 
 function toU256(hex){
-  //let tokens = hex.slice(2).padStart(64, '0').match(/[0-9a-z]{2}/gi);
-  //return {val: tokens.map(t => parseInt(t, 16))}
   let num = new BN(hex.slice(2).padStart(64, '0'), 16);
   return {val: num.toArray('le')}
 }
@@ -67,11 +64,7 @@ async function main() {
   let muonResponse = await muon.app('tss').
     method('test', {}).call();
 
-  console.log(muonResponse);
-
-  console.log(muonResponse.signatures[0].ownerPubKey.x, "x", 
-    toU256(muonResponse.signatures[0].ownerPubKey.x)
-  )
+  // console.log(muonResponse);
 
   let hash = soliditySha3(muonResponse.data.signParams);
 
@@ -84,7 +77,8 @@ async function main() {
       nonce: muonResponse.sigs[0].nonce 
     }]
   ).call();
-  console.log('evmRet', evmRet);
+
+  console.log("EVM Return:", evmRet);
 
   const tx = await program.methods.verify(
     toU256(muonResponse.reqId),
@@ -95,7 +89,7 @@ async function main() {
     },
     {
         x: toU256(muonResponse.signatures[0].ownerPubKey.x),
-        parity: muonResponse.signatures[0].ownerPubKey.parity
+        parity: muonResponse.signatures[0].ownerPubKey.yParity
     }
   ).rpc();
   console.log("Transaction signature", tx);  

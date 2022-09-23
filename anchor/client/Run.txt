@@ -1,0 +1,16 @@
+1- run solana local validator
+$ solana-test-validator
+
+2- export env vars
+$ export ANCHOR_PROVIDER_URL=http://127.0.0.1:8899
+$ export ANCHOR_WALLET=./id.json
+
+The wallet should have SOL to pay the gas fees.
+
+3- deploy muon
+$ cd ../muon
+$ anchor build
+$ anchor deploy
+
+4- run the client
+$ nodejs client.js

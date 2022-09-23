@@ -23,7 +23,7 @@ pub mod muon {
         pubKey: GroupPubKey
     ) -> Result<()> {
         msg!("pub_key: {:x}", pubKey.x.val);
-        msg!("reqId: [{:x}]", reqId);
+        msg!("reqId: [{:x}] {}", reqId, pubKey.parity);
         let ret: bool = schnorr_verify(
             // [U256Wrap] signer x
             pubKey.x.val,
