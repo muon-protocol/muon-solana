@@ -22,8 +22,7 @@ pub mod muon {
         sign: SchnorrSign,
         pubKey: GroupPubKey
     ) -> Result<()> {
-        msg!("pub_key: {:x}", pubKey.x.val);
-        msg!("reqId: [{:x}] {}", reqId, pubKey.parity);
+
         let ret: bool = schnorr_verify(
             // [U256Wrap] signer x
             pubKey.x.val,
@@ -42,7 +41,7 @@ pub mod muon {
             return Err(MuonError::NotVerified.into());
         }
 
-        // msg!("req_id: [{:x}]", req_id);
+        msg!("req_id: {:x}", reqId);
 
         //TODO: emit an event.
         // maybe using https://docs.rs/anchor-lang/latest/anchor_lang/macro.emit.html
