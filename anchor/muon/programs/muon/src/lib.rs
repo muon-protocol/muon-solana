@@ -5,10 +5,11 @@ pub mod errors;
 use anchor_lang::prelude::*;
 use crate::{
     types::{SchnorrSign, MuonRequestId, GroupPubKey, U256Wrap},
-    utils::schnorr_verify
+    utils::schnorr_verify,
+    errors::MuonError
 };
 
-declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
+declare_id!("4KBdhmEHx1G5TC4qKqC31DhTLFEe4xrtRhHo6ttwVM7v");
 
 #[program]
 pub mod muon {
@@ -21,6 +22,8 @@ pub mod muon {
         sign: SchnorrSign,
         pubKey: GroupPubKey
     ) -> Result<()> {
+        msg!("pub_key: {:x}", pubKey.x.val);
+        msg!("reqId: [{:x}]", reqId);
         let ret: bool = schnorr_verify(
             // [U256Wrap] signer x
             pubKey.x.val,
@@ -34,10 +37,10 @@ pub mod muon {
             sign.nonce.val
         )?;
 
-        // if !ret{
-        //     msg!("TSS Not Verified");
-        //     return Err(MuonError::NotVerified.into());
-        // }
+        if !ret{
+            msg!("TSS Not Verified");
+            return Err(MuonError::NotVerified.into());
+        }
 
         // msg!("req_id: [{:x}]", req_id);
 

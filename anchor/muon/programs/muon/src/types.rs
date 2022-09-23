@@ -1,10 +1,10 @@
 use borsh::{BorshDeserialize, BorshSerialize};
 use borsh::maybestd::io::Write;
 use primitive_types::{U256 as u256};
-// use std::{
-//     convert::TryInto,
-//     fmt
-// };
+use std::{
+    convert::TryInto,
+    fmt
+};
 
 use anchor_lang::prelude::*;
 
@@ -56,15 +56,15 @@ pub struct MuonRequestId{
     pub val: [u8; 32]
 }
 
-// impl fmt::LowerHex for MuonRequestId {
-//     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-//         write!(f, "f")?;
-//         for i in &self.0[..] {
-//             write!(f, "{:02x}", i)?;
-//         }
-//         Ok(())
-//     }
-// }
+impl fmt::LowerHex for MuonRequestId {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "f")?;
+        for i in &self.val[..] {
+            write!(f, "{:02x}", i)?;
+        }
+        Ok(())
+    }
+}
 
 // impl BorshSerialize for MuonRequestId {
 //     #[inline]
