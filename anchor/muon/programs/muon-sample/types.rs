@@ -9,7 +9,7 @@ use std::{
 use anchor_lang::prelude::*;
 
 
-#[derive(PartialEq, Copy, Clone)]
+#[derive(PartialEq)]
 pub struct U256Wrap{
     pub val: u256
 }
@@ -25,7 +25,7 @@ pub struct SchnorrSign {
 }
 
 //#[derive(BorshSerialize, BorshDeserialize, Debug)]
-#[derive(AnchorSerialize, AnchorDeserialize, PartialEq, Debug, Copy, Clone)]
+#[derive(AnchorSerialize, AnchorDeserialize, PartialEq, Debug)]
 pub struct GroupPubKey {
     // s value of signature
     pub x: U256Wrap,

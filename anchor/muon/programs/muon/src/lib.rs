@@ -51,7 +51,13 @@ pub mod muon {
 }
 
 #[derive(Accounts)]
-pub struct Initialize {}
+pub struct Initialize<'info> {
+    // #[account(init, payer = user, space = 8 + 8)]
+    // pub my_account: Account<'info, MyAccount>,
+    #[account(mut)]
+    pub user: Signer<'info>,
+    pub system_program: Program<'info, System>,
+}
 
 // #[derive(AnchorSerialize, AnchorDeserialize, Eq, PartialEq, Clone, Debug)]
 // pub struct MuonRequestId (pub [u8; 32]);

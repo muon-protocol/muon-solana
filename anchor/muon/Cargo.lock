@@ -860,6 +860,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "muon-sample"
+version = "0.1.0"
+dependencies = [
+ "anchor-lang",
+ "muon",
+]
+
+[[package]]
 name = "num-derive"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
