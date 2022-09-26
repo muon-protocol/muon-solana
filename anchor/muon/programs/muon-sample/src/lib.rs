@@ -4,13 +4,19 @@ use muon::{
 };
 use muon::{self};
 
-declare_id!("HmbTLCmaGvZhKnn1Zfa1JVnp7vkMV4DYVxPLWBVoN65L");
+declare_id!("EbqAz7dRNg57aMVsgPxt294nTpU54FDtsrqwVKsRBTnj");
 
 #[program]
 pub mod muon_sample {
     use super::*;
 
-    pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
+    pub fn initialize(
+    	ctx: Context<Initialize>, 
+    	muon_pub_key: GroupPubKey) -> Result<()> {
+
+    	let muon_app_account = &mut ctx.accounts.muon_app_info;
+    	muon_app_account.group_key = muon_pub_key;
+
         Ok(())
     }
 
@@ -33,7 +39,7 @@ pub struct Initialize<'info> {
     #[account(
         init,
         payer = user,
-        space = 8 + 256 + 8, seeds = [b"muon-app-info", system_program.key().as_ref()], bump
+        space = 8 + 256 + 8, seeds = [b"muon-app-info"], bump
     )]
     pub muon_app_info: Account<'info, MuonInfo>
 }

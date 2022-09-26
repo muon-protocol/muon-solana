@@ -2,8 +2,8 @@
 seeds = false
 skip-lint = false
 [programs.localnet]
-muon = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
-muon_sample = "HmbTLCmaGvZhKnn1Zfa1JVnp7vkMV4DYVxPLWBVoN65L"
+muon = "4KBdhmEHx1G5TC4qKqC31DhTLFEe4xrtRhHo6ttwVM7v"
+muon_sample = "EbqAz7dRNg57aMVsgPxt294nTpU54FDtsrqwVKsRBTnj"
 
 [registry]
 url = "https://api.apr.dev"

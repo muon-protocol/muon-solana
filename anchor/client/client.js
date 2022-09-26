@@ -41,8 +41,8 @@ idl['types'].push(
 
 
 const programId = new anchor.web3.PublicKey("4KBdhmEHx1G5TC4qKqC31DhTLFEe4xrtRhHo6ttwVM7v");
-
-anchor.setProvider(anchor.AnchorProvider.env());
+const provider = anchor.AnchorProvider.env();
+anchor.setProvider(provider);
 
 const program = new anchor.Program(idl, programId);
 
